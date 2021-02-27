@@ -33,6 +33,7 @@ class AddFragment: Fragment() {
             R.id.color_6_button, R.id.color_7_button, R.id.color_8_button, R.id.color_9_button,
             R.id.color_10_button, R.id.color_11_button, R.id.color_12_button, R.id.color_13_button,
             R.id.color_14_button, R.id.color_15_button, R.id.color_16_button)  }
+
     companion object {
         fun newInstance() = AddFragment()
     }
@@ -70,7 +71,7 @@ class AddFragment: Fragment() {
                 Toast.makeText(this.activity, viewModel.name, Toast.LENGTH_SHORT).show()
                 this.hide()
             }
-            true
+            false
         }
 
         name_entry.addTextChangedListener(object : TextWatcher {
@@ -189,7 +190,9 @@ class AddFragment: Fragment() {
 
             }
         })
+
     }
+
 
     private fun Fragment.hide() {
         this.activity?.currentFocus.let {
@@ -222,7 +225,9 @@ class AddFragment: Fragment() {
                 viewModel.add()
                 Toast.makeText(this.activity, getString(R.string.successful_added_habit_toast), Toast.LENGTH_LONG).show()
                 clear()
-                findNavController().navigate(R.id.action_addFragment_to_habitsFragment)
+                //findNavController().navigate(R.id.action_addFragment_to_habitsFragment)
+                activity?.supportFragmentManager?.popBackStack()
+                activity?.supportFragmentManager?.beginTransaction()?.add(R.id.nav_host_fragment, HabitsFragment.newInstance())?.commit()
             }
         }
     }

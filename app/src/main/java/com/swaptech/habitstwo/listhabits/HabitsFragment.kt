@@ -112,8 +112,8 @@ class HabitsFragment: Fragment() {
         }
 
         add_habit_button.setOnClickListener {
-            //activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.nav_host_fragment, AddFragment.newInstance())?.addToBackStack(null)?.commit()
-            findNavController().navigate(R.id.action_habitsFragment_to_addFragment2)
+            activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.nav_host_fragment, AddFragment.newInstance())?.addToBackStack(null)?.commit()
+            //findNavController().navigate(R.id.action_habitsFragment_to_addFragment2)
         }
     }
 
