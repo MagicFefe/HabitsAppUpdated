@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">Habits</string>
+
+    <string name="sample_title">Sample Title</string>
+    <string name="sample_description">Sample Description</string>
+    <string name="sample_priority">Sample Priority</string>
+    <string name="sample_typeof_habit">Sample Type Of Habit</string>
+    <string name="sample_periodicity">Sample Periodicity</string>
+
+    <string name="high_priority">High</string>
+    <string name="medium_priority">Medium</string>
+    <string name="low_priority">Low</string>
+
+    <string-array name="choose_periodicity">
+        <item>@string/high_priority</item>
+        <item>@string/medium_priority</item>
+        <item>@string/low_priority</item>
+    </string-array>
+
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="home_item_nav_drawer">Home</string>
+    <string name="about_item_nav_drawer">About</string>
+    <string name="add_bottom_nav_view">Add</string>
+    <string name="habits_bottom_nav_view">Habits</string>
+    <string name="good_radio_button">Good</string>
+    <string name="bad_radio_button">Bad</string>
+    <string name="time_s_every">time(s) every</string>
+    <string name="days">days</string>
+    <string name="filter_bottom_sheet">Filter</string>
+    <string name="reset_bottom_sheet">Reset</string>
+    <string name="type_high_medium_low_bottom_sheet">Type: High, Medium, Low</string>
+    <string name="no_logged_in_header_nav_drawer">NO LOGGED IN</string>
+    <string name="logged_in_header_nav_drawer">SUCCESS</string>
+    <string name="logged_in_successful_toast">Successfully signed in!</string>
+    <string name="error_log_in_toast">Something went wrong</string>
+    <string name="help_with_filter_toast">Tap on a button with lens to search </string>
+    <string name="successful_added_habit_toast">Successful added</string>
+    <string name="good_type_of_habit_view_pager">Good</string>
+    <string name="bad_type_of_habit_view_pager">Bad</string>
+    <string name="delete_button_edit_activity">Delete</string>
+    <string name="version_of_app">Version: Beta 2.0.0</string>
+    <string name="welcome_splash">Welcome!</string>
+    <string name="add_habit_title">Add habit</string>
+</resources>

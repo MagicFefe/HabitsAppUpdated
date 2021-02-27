@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Привычки</string>
+
+    <string name="sample_title">Пример заголовка</string>
+    <string name="sample_description">Пример описания</string>
+    <string name="sample_priority">Пример приоритета</string>
+    <string name="sample_typeof_habit">Пример типа привычки</string>
+    <string name="sample_periodicity">Пример периодичности</string>
+
+
+    <string name="high_priority">Высокий</string>
+    <string name="medium_priority">Средний</string>
+    <string name="low_priority">Низкий</string>
+
+    <string-array name="choose_periodicity">
+        <item>@string/high_priority</item>
+        <item>@string/medium_priority</item>
+        <item>@string/low_priority</item>
+    </string-array>
+
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Домой</string>
+    <string name="title_dashboard">Панель инструментов</string>
+    <string name="title_notifications">Уведомления</string>
+    <string name="home_item_nav_drawer">Домой</string>
+    <string name="about_item_nav_drawer">О приложении</string>
+    <string name="add_bottom_nav_view">Добавить</string>
+    <string name="habits_bottom_nav_view">Привычки</string>
+    <string name="good_radio_button">Хорошая</string>
+    <string name="bad_radio_button">Плохая</string>
+    <string name="time_s_every">раз(а) каждые(й)</string>
+    <string name="days">день(ей)</string>
+    <string name="filter_bottom_sheet">Фильтр</string>
+    <string name="reset_bottom_sheet">Сбросить</string>
+    <string name="type_high_medium_low_bottom_sheet">Введите: Высокий, Средний, Низкий</string>
+    <string name="no_logged_in_header_nav_drawer">НЕ АВТОРИЗОВАН</string>
+    <string name="logged_in_header_nav_drawer">УСПЕХ</string>
+    <string name="logged_in_successful_toast">Вы успешно авторизованы!</string>
+    <string name="error_log_in_toast">Что-то пошло не так</string>
+    <string name="help_with_filter_toast">Нажмите на кнопку с лупой, чтобы начать поиск</string>
+    <string name="successful_added_habit_toast">Привычка успешно добавлена</string>
+    <string name="good_type_of_habit_view_pager">Хорошие</string>
+    <string name="bad_type_of_habit_view_pager">Плохие</string>
+    <string name="delete_button_edit_activity">Удалить</string>
+    <string name="version_of_app">Версия: Бета 2.0.0</string>
+    <string name="welcome_splash">Добро пожаловать!</string>
+    <string name="add_habit_title">Добавить привычку</string>
+
+</resources>

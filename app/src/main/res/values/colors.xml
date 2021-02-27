@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="my_red">#B71C1C</color>
+    <color name="light_grey">#FDFDFD</color>
+    <color name="dark_grey">#D3D3D3</color>
+    <color name="purple_100">#e1bee7</color>
+    <color name="my_purple_200">#ce93d8</color>
+
+
+
+    <color name="red_color_picker">#FF1744</color>
+    <color name="green_color_picker">#00E676</color>
+    <color name="light_orange_color_picker">#FFAB91</color>
+    <color name="light_purple_color_picker">#D1C4E9</color>
+    <color name="light_blue_color_picker">#80DEEA</color>
+    <color name="light_yellow_color_picker">#C6FF00</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="purple">#C51162</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="light_cyan_color_picker">#80CBC4</color>
+    <color name="light_light_yellow_color_picker">#F9FBE7</color>
+    <color name="cyan_color_picker">#18FFFF</color>
+    <color name="light_light_brown_color_picker">#EFEBE9</color>
+    <color name="light_light_green_color_picker">#E8F5E9</color>
+    <color name="light_pink_color_picker">#F06292</color>
+
+
+</resources>
