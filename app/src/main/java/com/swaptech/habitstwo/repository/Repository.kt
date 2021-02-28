@@ -2,6 +2,7 @@ package com.swaptech.habitstwo.repository
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import com.swaptech.habitstwo.database.HabitsDatabase
 import com.swaptech.habitstwo.server.RetrofitApi
@@ -11,7 +12,7 @@ import com.swaptech.habitstwo.server.models.HabitUID
 import retrofit2.Response
 
 class Repository(context: Context) {
-    val db = Room.databaseBuilder(context, HabitsDatabase::class.java, "fromServer").build()
+    val db = Room.databaseBuilder(context, HabitsDatabase::class.java, "fromServer").allowMainThreadQueries().build()
     val dao = db.habitsFromServerDao()
 
 
@@ -32,7 +33,7 @@ class Repository(context: Context) {
     }
 
 
-    suspend fun getHabitsFromLocal(): List<Habit> {
+    fun getHabitsFromLocal(): LiveData<List<Habit>> {
         return dao.getHabits()
     }
     suspend fun addHabitsToLocal(habit: Habit) {

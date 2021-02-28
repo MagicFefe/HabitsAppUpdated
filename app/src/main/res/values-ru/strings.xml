@@ -40,6 +40,7 @@
     <string name="error_log_in_toast">Что-то пошло не так</string>
     <string name="help_with_filter_toast">Нажмите на кнопку с лупой, чтобы начать поиск</string>
     <string name="successful_added_habit_toast">Привычка успешно добавлена</string>
+    <string name="error_adding_habit_toast">УбедитесьБ что все поля заполнены</string>
     <string name="good_type_of_habit_view_pager">Хорошие</string>
     <string name="bad_type_of_habit_view_pager">Плохие</string>
     <string name="delete_button_edit_activity">Удалить</string>

@@ -20,13 +20,13 @@ class HabitsListViewModel(application: Application) : AndroidViewModel(applicati
         var searchFilter: String? = null
     }
     val anotherRepo = Repository(application)
-    var habitsFromAnotherDb = MutableLiveData<List<Habit>>()
+    var habitsFromAnotherDb: LiveData<List<Habit>>
 
+    init {
+        habitsFromAnotherDb = anotherRepo.getHabitsFromLocal()
+    }
     fun getHabits() {
         viewModelScope.launch {
-
-            val habitsFromLocal = anotherRepo.getHabitsFromLocal()
-            habitsFromAnotherDb.value = habitsFromLocal
 
             val habitsFromServer = anotherRepo.getHabits()
             serverResponse.value = habitsFromServer

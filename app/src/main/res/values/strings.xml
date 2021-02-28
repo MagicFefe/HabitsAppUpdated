@@ -38,6 +38,7 @@
     <string name="error_log_in_toast">Something went wrong</string>
     <string name="help_with_filter_toast">Tap on a button with lens to search </string>
     <string name="successful_added_habit_toast">Successful added</string>
+    <string name="error_adding_habit_toast">Make sure all fields are filled in</string>
     <string name="good_type_of_habit_view_pager">Good</string>
     <string name="bad_type_of_habit_view_pager">Bad</string>
     <string name="delete_button_edit_activity">Delete</string>

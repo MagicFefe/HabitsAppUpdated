@@ -16,8 +16,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.swaptech.habitstwo.*
 import com.swaptech.habitstwo.App.Companion.item
 import com.swaptech.habitstwo.listhabits.HabitsFragment
@@ -191,6 +189,35 @@ class AddFragment: Fragment() {
             }
         })
 
+        button_complete_creating_habit.setOnClickListener {
+            val result = checkCompleting()
+            if (result) {
+                viewModel.habit = RecItem(
+                    viewModel.name, viewModel.description, viewModel.priority,
+                    viewModel.typeOfHabit, viewModel.periodicity,
+                    viewModel.countOfExecsOfHabit, viewModel.frequencyOfExecs, colorOfHabit, 0
+                )
+                if (viewModel.typeOfHabit == getString(R.string.good_radio_button)) {
+                    viewModel._goodHabits.add(viewModel.habit)
+                } else {
+                    viewModel._badHabits.add(viewModel.habit)
+                }
+
+                viewModel.add()
+                Toast.makeText(
+                    this.activity,
+                    getString(R.string.successful_added_habit_toast),
+                    Toast.LENGTH_SHORT
+                ).show()
+                clear()
+                //findNavController().navigate(R.id.action_addFragment_to_habitsFragment)
+                activity?.supportFragmentManager?.popBackStack()
+                activity?.supportFragmentManager?.beginTransaction()
+                    ?.add(R.id.nav_host_fragment, HabitsFragment.newInstance())?.commit()
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.error_adding_habit_toast), Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
 
@@ -201,7 +228,7 @@ class AddFragment: Fragment() {
         }
     }
 
-    fun checkCompleting() {
+    fun checkCompleting(): Boolean {
         if (viewModel.name.isNotEmpty()
                 && viewModel.description.isNotEmpty()
                 && viewModel.priority.isNotEmpty()
@@ -209,27 +236,11 @@ class AddFragment: Fragment() {
                 && viewModel.periodicity.isNotEmpty()
                 && viewModel.countOfExecsOfHabit > 0
                 && viewModel.frequencyOfExecs > 0) {
-            button_complete_creating_habit.visibility = View.VISIBLE
-            button_complete_creating_habit.setOnClickListener {
-                viewModel.habit = RecItem(
-                        viewModel.name, viewModel.description, viewModel.priority,
-                        viewModel.typeOfHabit, viewModel.periodicity,
-                        viewModel.countOfExecsOfHabit, viewModel.frequencyOfExecs, colorOfHabit, 0
-                )
-                if (viewModel.typeOfHabit == getString(R.string.good_radio_button)) {
-                    viewModel._goodHabits.add(viewModel.habit)
-                } else {
-                    viewModel._badHabits.add(viewModel.habit)
-                }
-
-                viewModel.add()
-                Toast.makeText(this.activity, getString(R.string.successful_added_habit_toast), Toast.LENGTH_LONG).show()
-                clear()
-                //findNavController().navigate(R.id.action_addFragment_to_habitsFragment)
-                activity?.supportFragmentManager?.popBackStack()
-                activity?.supportFragmentManager?.beginTransaction()?.add(R.id.nav_host_fragment, HabitsFragment.newInstance())?.commit()
-            }
+            return true
         }
+
+        return false
+
     }
 
     private fun clear() {

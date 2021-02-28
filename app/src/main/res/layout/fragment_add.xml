@@ -1,122 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/create_edit_constraint_layout"
+    android:background="@color/white"
+    
+    >
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/period_of_exec_of_habit"
-        app:layout_constraintStart_toEndOf="@+id/period_of_exec_of_habit">
+        android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/name_entry"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/create_edit_constraint_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:hint="@string/sample_title"
-            android:inputType="text"
-            android:singleLine="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="@+id/period_of_exec_of_habit"
+            app:layout_constraintStart_toEndOf="@+id/period_of_exec_of_habit">
 
-        <EditText
-            android:id="@+id/description_entry"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:hint="@string/sample_description"
-            android:inputType="textMultiLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/name_entry" />
+            <EditText
+                android:id="@+id/name_entry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:hint="@string/sample_title"
+                android:inputType="text"
+                android:singleLine="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <Spinner
-            android:id="@+id/priority_entry_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:entries="@array/choose_periodicity"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/description_entry" />
+            <EditText
+                android:id="@+id/description_entry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:hint="@string/sample_description"
+                android:inputType="textMultiLine"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/name_entry" />
 
-        <RadioGroup
-            android:id="@+id/type_entry"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/priority_entry_fragment">
+            <Spinner
+                android:id="@+id/priority_entry_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:entries="@array/choose_periodicity"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/description_entry" />
 
-            <RadioButton
-                android:id="@+id/type_good_habit"
+            <RadioGroup
+                android:id="@+id/type_entry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/priority_entry_fragment">
+
+                <RadioButton
+                    android:id="@+id/type_good_habit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/good_radio_button" />
+
+                <RadioButton
+                    android:id="@+id/type_bad_habit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bad_radio_button" />
+
+            </RadioGroup>
+
+            <EditText
+                android:id="@+id/num_of_execs_of_habit_entry"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/good_radio_button" />
+                android:layout_margin="5dp"
+                android:autofillHints="@string/sample_description"
+                android:inputType="number"
+                android:singleLine="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/type_entry" />
 
-            <RadioButton
-                android:id="@+id/type_bad_habit"
+
+            <TextView
+                android:id="@+id/tv1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/bad_radio_button" />
-
-        </RadioGroup>
-
-        <EditText
-            android:id="@+id/num_of_execs_of_habit_entry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:autofillHints="@string/sample_description"
-            android:inputType="number"
-            android:singleLine="true"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/type_entry" />
+                android:layout_margin="5dp"
+                android:layout_marginStart="4dp"
+                android:text="@string/time_s_every"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/num_of_execs_of_habit_entry"
+                app:layout_constraintStart_toEndOf="@id/num_of_execs_of_habit_entry" />
 
 
-        <TextView
-            android:id="@+id/tv1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_marginStart="4dp"
-            android:text="@string/time_s_every"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@id/num_of_execs_of_habit_entry"
-            app:layout_constraintStart_toEndOf="@id/num_of_execs_of_habit_entry" />
+            <EditText
+                android:id="@+id/period_of_exec_of_habit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:autofillHints="@string/sample_description"
+                android:inputType="number"
+                android:singleLine="true"
+                app:layout_constraintTop_toBottomOf="@id/type_entry"
+                app:layout_constraintStart_toEndOf="@id/tv1" />
 
-
-        <EditText
-            android:id="@+id/period_of_exec_of_habit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:autofillHints="@string/sample_description"
-            android:inputType="number"
-            android:singleLine="true"
-            app:layout_constraintTop_toBottomOf="@id/type_entry"
-            app:layout_constraintStart_toEndOf="@id/tv1" />
-
-        <TextView
-            android:id="@+id/tv2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginBottom="4dp"
-            android:text="@string/days"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@id/num_of_execs_of_habit_entry"
-            app:layout_constraintStart_toEndOf="@id/period_of_exec_of_habit" />
+            <TextView
+                android:id="@+id/tv2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginBottom="4dp"
+                android:text="@string/days"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/num_of_execs_of_habit_entry"
+                app:layout_constraintStart_toEndOf="@id/period_of_exec_of_habit" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -266,24 +270,32 @@
 
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/save_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_forward_24"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@id/description_entry"
-            app:layout_constraintTop_toBottomOf="@id/description_entry" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/button_complete_creating_habit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_check_24"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/save_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_forward_24"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@id/description_entry"
+                app:layout_constraintTop_toBottomOf="@id/description_entry" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+    <Button
+        android:id="@+id/button_complete_creating_habit"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_button_height"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/add_bottom_nav_view"
+        android:elevation="20dp"
+        android:background="@color/purple_700"
+        android:textColor="@color/white"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
