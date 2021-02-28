@@ -4,16 +4,38 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.swaptech.habitstwo.App
 import com.swaptech.habitstwo.repository.HabitModelRepository
 import com.swaptech.habitstwo.R
 import com.swaptech.habitstwo.model.RecItem
+import com.swaptech.habitstwo.repository.Repository
+import com.swaptech.habitstwo.server.models.Habit
+import kotlinx.coroutines.launch
+import retrofit2.Response
 
 class HabitsListViewModel(application: Application) : AndroidViewModel(application) {
 
     companion object {
         var searchFilter: String? = null
     }
+    val anotherRepo = Repository(application)
+    var habitsFromAnotherDb = MutableLiveData<List<Habit>>()
+
+    fun getHabits() {
+        viewModelScope.launch {
+
+            val habitsFromLocal = anotherRepo.getHabitsFromLocal()
+            habitsFromAnotherDb.value = habitsFromLocal
+
+            val habitsFromServer = anotherRepo.getHabits()
+            serverResponse.value = habitsFromServer
+
+        }
+    }
+    var serverResponse = MutableLiveData<Response<List<Habit>>>()
+
+    var isConnected = false
     var _badHabits = mutableListOf<RecItem>()
     var _goodHabits = mutableListOf<RecItem>()
 

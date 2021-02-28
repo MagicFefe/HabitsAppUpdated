@@ -10,9 +10,6 @@ data class RecItem constructor(
         var frequencyOfExecs: Int = -1,
         var color: Int = -1,
         var id: Int = -1
-        ) {
-
-}
-
+)
 
 

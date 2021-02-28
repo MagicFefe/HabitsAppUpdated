@@ -3,13 +3,16 @@ package com.swaptech.habitstwo.repository
 import android.content.Context
 import androidx.room.Room
 import com.swaptech.habitstwo.database.HabitEntity
-import com.swaptech.habits.database.HabitsDatabase
+import com.swaptech.habitstwo.database.HabitsDatabase
 import com.swaptech.habitstwo.App
 import com.swaptech.habitstwo.R
 import com.swaptech.habitstwo.model.RecItem
+import com.swaptech.habitstwo.server.RetrofitApi
+import com.swaptech.habitstwo.server.models.Habit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
 
 class HabitModelRepository(context: Context) {

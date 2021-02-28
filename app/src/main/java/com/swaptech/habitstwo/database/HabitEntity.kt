@@ -17,6 +17,9 @@ data class HabitEntity(
         @ColumnInfo(name = "typeOfHabit") val typeOfHabit: String,
         @ColumnInfo(name = "periodicity") val periodicity: String,
         @ColumnInfo(name = "countOfExecs") val countOfExecs: Int,
-        @ColumnInfo(name = "frequencyOfExecs") val frequencyOfExecs: Int
+        @ColumnInfo(name = "frequencyOfExecs") val frequencyOfExecs: Int,
+        val date: Int = 0,
+        val doneDate: Int = 0,
+        var uid: String = ""
 ) : Parcelable
 

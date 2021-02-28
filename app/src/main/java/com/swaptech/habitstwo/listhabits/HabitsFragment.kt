@@ -11,13 +11,16 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.swaptech.habitstwo.App
 import com.swaptech.habitstwo.R
 import com.swaptech.habitstwo.actionwithhabit.AddFragment
 import com.swaptech.habitstwo.implofelements.ViewPagerAdapter
+import com.swaptech.habitstwo.server.models.Habit
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_habits.*
 import java.lang.Exception
@@ -26,12 +29,10 @@ import java.lang.Exception
 
 class HabitsFragment: Fragment() {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
-    /*
-    private val viewModel: HabitsListViewModel by lazy {
-        ViewModelProvider(this@HabitsFragment).get(HabitsListViewModel::class.java)
-    }
 
-     */
+    private lateinit var viewModel: HabitsListViewModel
+
+
     companion object {
         fun newInstance(): HabitsFragment {
             return HabitsFragment()
@@ -43,7 +44,20 @@ class HabitsFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        //TODO("JUST FOR TEST, YOU MUST REPLACE THIS TO LIVEDATA")
+        viewModel = ViewModelProvider(this).get(HabitsListViewModel::class.java)
+        viewModel.isConnected = App.isConnected
 
+        viewModel.getHabits()
+        viewModel.serverResponse.observe(viewLifecycleOwner, Observer {
+            if(it.isSuccessful) {
+                val _habits = it.body()
+                Toast.makeText(requireContext(), "OK", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "${_habits}", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "${it.errorBody()}", Toast.LENGTH_SHORT).show()
+            }
+        })
         return inflater.inflate(R.layout.fragment_habits, container, false)
     }
 
