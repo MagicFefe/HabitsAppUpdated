@@ -3,32 +3,21 @@ package com.swaptech.habitstwo.navigation
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.content.IntentFilter
-import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
-import android.view.MenuItem
-import android.view.View
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.navigation.ui.*
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
 import com.swaptech.habitstwo.CommonNetworkReceiver
 import com.swaptech.habitstwo.R
 import com.swaptech.habitstwo.actionwithhabit.AddFragment
-import com.swaptech.habitstwo.implofelements.ViewPagerAdapter
-import com.swaptech.habitstwo.listhabits.HabitsFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_about.*
-import kotlinx.android.synthetic.main.fragment_habits.*
+
 
 
 class MainActivity : AppCompatActivity()/*, NavigationView.OnNavigationItemSelectedListener */ {
 
     //private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var appBarConfiguration: AppBarConfiguration
+
     /*
     private val mOnNavigationViewClickListener = BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
         when(menuItem.itemId) {
@@ -45,11 +34,14 @@ class MainActivity : AppCompatActivity()/*, NavigationView.OnNavigationItemSelec
     }
 
      */
+    /*
     private fun openFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.nav_host_fragment, fragment)
         transaction.commit()
     }
+
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

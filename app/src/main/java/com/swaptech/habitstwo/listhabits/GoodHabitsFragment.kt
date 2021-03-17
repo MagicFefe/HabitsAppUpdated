@@ -6,19 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.swaptech.habitstwo.App.Companion.item
 import com.swaptech.habitstwo.actionwithhabit.EditFragment
 import com.swaptech.habitstwo.R
-import com.swaptech.habitstwo.model.RecItem
+import com.swaptech.habitstwo.model.HabitForLocal
 import com.swaptech.habitstwo.recyclerview.Adapter
 import com.swaptech.habitstwo.recyclerview.RecyclerViewClickListener
+import com.swaptech.habitstwo.App
+import com.swaptech.habitstwo.loadGoodHabitsToLocal
+import kotlinx.android.synthetic.main.fragment_good_habits.*
 
 class GoodHabitsFragment : Fragment(), RecyclerViewClickListener {
-
-    private lateinit var adapter: Adapter
+    private val adapter by lazy {
+        Adapter(mutableListOf(), requireContext(), this)
+    }
     private lateinit var viewModel: HabitsListViewModel
     /*
     var isNeedToUpdate: Boolean by Delegates.observable(false) {
@@ -35,19 +37,18 @@ class GoodHabitsFragment : Fragment(), RecyclerViewClickListener {
         fun newInstance() = GoodHabitsFragment()
     }
 
-    override fun onRecyclerViewListClickListener(data: RecItem, position: Int) {
+    override fun onRecyclerViewListClickListener(data: HabitForLocal, position: Int) {
 
         viewModel.position = position
-        item = viewModel._goodHabits[position]
 
+        viewModel.goodHabits.value?.get(position)?.let {
+            item = it
+        }
         activity?.supportFragmentManager?.beginTransaction()?.replace(
-            R.id.nav_host_fragment,
-            EditFragment.newInstance())
-            ?.addToBackStack(null)
-            ?.commit()
-
-
-
+                R.id.nav_host_fragment,
+                EditFragment.newInstance())
+                ?.addToBackStack(null)
+                ?.commit()
     }
 
     override fun onCreateView(
@@ -58,33 +59,31 @@ class GoodHabitsFragment : Fragment(), RecyclerViewClickListener {
         val view  = inflater.inflate(R.layout.fragment_good_habits, container, false)
 
         viewModel = ViewModelProvider(this).get(HabitsListViewModel::class.java)
-        adapter = Adapter(viewModel._goodHabits, requireContext(), this)
-        val recView = view.findViewById<RecyclerView>(R.id.rec_view_good)
-        recView?.layoutManager = LinearLayoutManager(view.context)
-        /*
-        val marginLayoutParams = LinearLayout.LayoutParams(recView?.layoutParams)//ViewGroup.MarginLayoutParams(recView?.layoutParams)
-        marginLayoutParams.setMargins(3, 3,3,3)
-        recView?.layoutParams = marginLayoutParams
-
-
-         */
-
-        /*
-        val margins = (recView.layoutParams as ConstraintLayout.LayoutParams).apply {
-            leftMargin = 0
-            rightMargin = 0
-            topMargin = 0
-            bottomMargin = 0
-        }
-        recView.layoutParams = margins
-
-         */
-        recView?.adapter = adapter
-        //recView?.addItemDecoration(DividerItemDecoration(view.context, VERTICAL))
-
-
 
         return view
-
     }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        setRecyclerView()
+
+        //Checking connection in ActivityCreated because NetworkReceiver registering in activity
+        App.isConnected.observe(viewLifecycleOwner,  {
+            if(it == true) {
+                viewModel.getHabits()
+            }
+        })
+
+        viewModel.goodHabits.observe(viewLifecycleOwner) {
+            adapter.updateData(it ?: mutableListOf())
+            viewModel.deleteAllFromLocal()
+            viewModel.loadGoodHabitsToLocal()
+        }
+    }
+    private fun setRecyclerView() {
+        rec_view_good?.adapter = adapter
+        rec_view_good.layoutManager = LinearLayoutManager(this.context)
+    }
+
 }

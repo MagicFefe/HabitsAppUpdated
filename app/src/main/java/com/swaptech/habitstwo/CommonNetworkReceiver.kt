@@ -20,7 +20,7 @@ class CommonNetworkReceiver: BroadcastReceiver() {
         val connectivityManager: ConnectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val connectionState : Boolean = connectivityManager.activeNetworkInfo?.isConnectedOrConnecting == true
         Companion.connectionState = connectionState
-        isConnected = connectionState
+        isConnected.value = connectionState
 
         return connectionState
     }

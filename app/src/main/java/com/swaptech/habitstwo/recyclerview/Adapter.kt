@@ -1,5 +1,6 @@
 package com.swaptech.habitstwo.recyclerview
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -9,15 +10,18 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.swaptech.habitstwo.R
-import com.swaptech.habitstwo.model.RecItem
+import com.swaptech.habitstwo.model.HabitForLocal
+
 
 class Adapter(
-        var items: MutableList<RecItem>,
+        var items: MutableList<HabitForLocal>,
         val context: Context,
-        val clickListener: RecyclerViewClickListener
+        private val clickListener: RecyclerViewClickListener
 )
     : RecyclerView.Adapter<Adapter.ViewHolder>() {
+
     private var color = 0
+
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         var name = itemView.findViewById<TextView>(R.id.title_habits_item)
@@ -27,19 +31,21 @@ class Adapter(
         var periodicity = itemView.findViewById<TextView>(R.id.periodicity_habits_item)
 
 
-        fun bind(recItem: RecItem, context: Context) {
-            name.text = recItem.name
-            description.text = recItem.description
-            priority.text = recItem.priority
-            typeOfHabit.text = recItem.typeOfHabit
-            periodicity.text = recItem.periodicity
-            itemView.setBackgroundColor(recItem.color)
-            color = recItem.color
+        @SuppressLint("SetTextI18n")
+        fun bind(habitForLocal: HabitForLocal, context: Context) {
+
+            name.text = habitForLocal.title
+            description.text = habitForLocal.description
+            priority.text = habitForLocal.priority
+            typeOfHabit.text = habitForLocal.type
+            periodicity.text = "${habitForLocal.count} ${context.getString(R.string.time_s_every)} ${habitForLocal.frequency} ${context.getString(R.string.days)}"
+            itemView.setBackgroundColor(habitForLocal.color)
+
             //change color of drawable resource
+            color = habitForLocal.color
             val unwrappedDrawable = AppCompatResources.getDrawable(context, R.drawable.round_button)
             val wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable!!)
             DrawableCompat.setTint(wrappedDrawable, color)
-
             itemView.setBackgroundResource(R.drawable.round_button)
         }
 
@@ -55,6 +61,7 @@ class Adapter(
         val item = items[position]
         val pos = holder.adapterPosition
         holder.bind(item, context)
+
         holder.itemView.setOnClickListener {
             clickListener.onRecyclerViewListClickListener(item, pos)
         }
@@ -65,7 +72,7 @@ class Adapter(
         return items.size
     }
 
-    fun updateData(habits: MutableList<RecItem>) {
+    fun updateData(habits: MutableList<HabitForLocal>) {
         items = habits
         notifyDataSetChanged()
     }

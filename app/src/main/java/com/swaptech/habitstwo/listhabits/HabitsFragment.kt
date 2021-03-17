@@ -1,25 +1,18 @@
 package com.swaptech.habitstwo.listhabits
 
 import android.os.Bundle
-import android.view.KeyEvent
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.swaptech.habitstwo.App
 import com.swaptech.habitstwo.R
-import com.swaptech.habitstwo.ResponseStatus
 import com.swaptech.habitstwo.actionwithhabit.AddFragment
 import com.swaptech.habitstwo.implofelements.ViewPagerAdapter
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_habits.*
-
+import android.view.*
 
 class HabitsFragment: Fragment() {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
@@ -38,34 +31,8 @@ class HabitsFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //[START] to do
-        //TODO("JUST FOR TEST, YOU MUST REPLACE THIS RECEIVING CONNECTION STATE TO LIVEDATA")
         viewModel = ViewModelProvider(this).get(HabitsListViewModel::class.java)
-        viewModel.isConnected = App.isConnected
 
-        viewModel.getHabits()
-        viewModel.habitsFromAnotherDb.observe(viewLifecycleOwner, Observer {
-            Toast.makeText(requireContext(), "${it}", Toast.LENGTH_SHORT).show()
-        })
-        viewModel.serverResponse.observe(viewLifecycleOwner, {
-            val responseFromServer = it.code()
-            if(it.isSuccessful) {
-                val _habits = it.body()
-                Toast.makeText(requireContext(), "OK", Toast.LENGTH_SHORT).show()
-                Toast.makeText(requireContext(), "${_habits}", Toast.LENGTH_SHORT).show()
-                Toast.makeText(requireContext(), "${it.code()}", Toast.LENGTH_SHORT).show()
-                Toast.makeText(requireContext(), "${ResponseStatus.OK}", Toast.LENGTH_SHORT).show()
-
-            } else {
-                when(responseFromServer) {
-                    ResponseStatus.BAD_REQUEST.code -> Toast.makeText(requireContext(), "${ResponseStatus.BAD_REQUEST}", Toast.LENGTH_SHORT).show()
-                    ResponseStatus.INTERNAL_SERVER_ERROR.code -> Toast.makeText(requireContext(), "${ResponseStatus.INTERNAL_SERVER_ERROR}", Toast.LENGTH_SHORT).show()
-                    ResponseStatus.UNAUTHORIZED.code -> Toast.makeText(requireContext(), "${ResponseStatus.UNAUTHORIZED}", Toast.LENGTH_SHORT).show()
-                }
-                Toast.makeText(requireContext(), "${it.code()}", Toast.LENGTH_SHORT).show()
-            }
-        })
-        //[END] to do
         return inflater.inflate(R.layout.fragment_habits, container, false)
     }
 
@@ -128,14 +95,14 @@ class HabitsFragment: Fragment() {
 
 
             }
-            //If returns true, then editText lock back button by clicking
+            //If returns true, then editText lock back button by clicking, because we need to return false
             false
 
         }
 
         add_habit_button.setOnClickListener {
             activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.nav_host_fragment, AddFragment.newInstance())?.addToBackStack(null)?.commit()
-            //findNavController().navigate(R.id.action_habitsFragment_to_addFragment2)
+
         }
     }
 
@@ -148,7 +115,6 @@ class HabitsFragment: Fragment() {
     private fun openFragment() {
         activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.nav_host_fragment, HabitsFragment.newInstance())?.commit()
     }
-
 }
 
 

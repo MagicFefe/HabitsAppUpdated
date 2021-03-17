@@ -2,28 +2,28 @@ package com.swaptech.habitstwo
 
 import android.app.Application
 import android.content.res.Resources
-import com.swaptech.habitstwo.model.RecItem
+import androidx.lifecycle.MutableLiveData
+import com.swaptech.habitstwo.model.HabitForLocal
+
 
 
 class App : Application() {
+
     override fun onCreate() {
         super.onCreate()
-        instance = this
         res = resources
-
     }
 
     companion object {
-        var instance: App? = null
-            private set
+        //Access to string resources in code
         var res: Resources? = null
             private set
 
-        var isConnected = false
+        //Receiving connection state
+        var isConnected = MutableLiveData(false)
 
-        var item: RecItem = RecItem("", "", "", "", "", -1, 0,0 ,0)
-
-
+        //Exchanging data between fragments
+        var item: HabitForLocal = HabitForLocal(color = 0, count = 0, date = 0, description = "",
+                doneDates = 0, frequency = 0, priority = "", title = "", type = "", uid = "")
     }
-
 }

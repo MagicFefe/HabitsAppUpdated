@@ -1,6 +1,5 @@
 package com.swaptech.habitstwo.server
 
-import com.swaptech.habitstwo.database.HabitEntity
 import com.swaptech.habitstwo.server.models.Habit
 import com.swaptech.habitstwo.server.models.HabitDone
 import com.swaptech.habitstwo.server.models.HabitUID
@@ -17,8 +16,9 @@ interface Api {
     @PUT("habit")
     suspend fun updateHabitToServer(@Body habit: Habit): Response<HabitUID>
 
-    @DELETE("habit")
-    suspend fun deleteHabitFromServer(@Body uid: HabitUID): Response<Any>
+    //If we will return not unit, we will have EOFException
+    @HTTP(method = "DELETE", path = "habit", hasBody = true)
+    suspend fun deleteHabitFromServer(@Body uid: HabitUID): Response<Unit>
 
     @POST("habit_done")
     suspend fun setHabitIsCompletedInServer(habitDone: HabitDone): Response<Any>

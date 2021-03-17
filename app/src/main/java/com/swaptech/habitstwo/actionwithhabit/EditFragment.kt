@@ -16,15 +16,16 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.swaptech.habitstwo.*
 import com.swaptech.habitstwo.App.Companion.item
+import com.swaptech.habitstwo.model.HabitForLocal
 import com.swaptech.habitstwo.listhabits.HabitsFragment
-import com.swaptech.habitstwo.model.RecItem
+import com.swaptech.habitstwo.repository.HabitsAndHabitsForLocalConverter
+import com.swaptech.habitstwo.server.models.HabitUID
 import kotlinx.android.synthetic.main.fragment_edit.*
 import java.lang.NumberFormatException
 
-class EditFragment : Fragment()/*, View.OnClickListener, BottomNavViewSwitcher */ {
+class EditFragment : Fragment(){
     private var colorOfHabit = R.color.dark_grey
     private lateinit var viewModel: ActionsWithHabitFragmentViewModel
     private val colorPickerItems: MutableList<Int> by lazy {  mutableListOf(R.id.color_1_button,
@@ -49,16 +50,17 @@ class EditFragment : Fragment()/*, View.OnClickListener, BottomNavViewSwitcher *
 
     }
 
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val name: String = item.name ?: ""
+        val name: String = item.title ?: ""
         val description: String = item.description ?: ""
-        val typeOfHabit: String = item.typeOfHabit ?: ""
-        val periodicity: String = item.periodicity ?: ""
+        val typeOfHabit: String = item.type ?: ""
+        val periodicity: String = "${item.doneDates} ${item.frequency}" ?: ""
         val priority: String = item.priority ?: ""
-        val countOfExecsOfHabit: Int = item.countOfExecsOfHabit
-        val frequencyOfExecs: Int = item.frequencyOfExecs
-        val id: Int = item.id
+        val countOfExecsOfHabit: Int = item.count
+        val frequencyOfExecs: Int = item.frequency
+        val id: Int = item.count
         color = item.color
         colorOfHabit = color
         viewModel.name = name
@@ -86,33 +88,12 @@ class EditFragment : Fragment()/*, View.OnClickListener, BottomNavViewSwitcher *
             }
         }
 
-        /*
-        color_1_button.setOnClickListener(this)
-        color_2_button.setOnClickListener(this)
-        color_3_button.setOnClickListener(this)
-        color_4_button.setOnClickListener(this)
-        color_5_button.setOnClickListener(this)
-        color_6_button.setOnClickListener(this)
-        color_7_button.setOnClickListener(this)
-        color_8_button.setOnClickListener(this)
-        color_9_button.setOnClickListener(this)
-        color_10_button.setOnClickListener(this)
-        color_11_button.setOnClickListener(this)
-        color_12_button.setOnClickListener(this)
-        color_13_button.setOnClickListener(this)
-        color_14_button.setOnClickListener(this)
-        color_15_button.setOnClickListener(this)
-        color_16_button.setOnClickListener(this)
-
-         */
-
-        //[START] restore data from recycler item
-        checkCompleting()
-        name_entry.setText(item.name)
+        name_entry.setText(item.title)
         description_entry.setText(item.description)
-        period_of_exec_of_habit.setText(item.countOfExecsOfHabit.toString())
-        num_of_execs_of_habit_entry.setText(item.frequencyOfExecs.toString())
-        if (item.typeOfHabit == getString(R.string.good_radio_button)) {
+        period_of_exec_of_habit.setText(item.count.toString())
+        num_of_execs_of_habit_entry.setText(item.frequency.toString())
+
+        if (item.type == getString(R.string.good_radio_button)) {
             type_good_habit.isChecked = true
         } else {
             type_bad_habit.isChecked = true
@@ -122,11 +103,11 @@ class EditFragment : Fragment()/*, View.OnClickListener, BottomNavViewSwitcher *
             getString(R.string.medium_priority) -> priority_entry_activity.setSelection(1)
             getString(R.string.low_priority) -> priority_entry_activity.setSelection(2)
         }
-        //[END] restore data from recycler item
 
+        checkCompleting()
         name_entry.setOnKeyListener { _, i, keyEvent ->
             if (keyEvent.action == KeyEvent.ACTION_DOWN && (i == KeyEvent.KEYCODE_ENTER)) {
-                Toast.makeText(requireContext(), item.name, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), item.title, Toast.LENGTH_SHORT).show()
                 this.hide()
             }
             false
@@ -138,7 +119,7 @@ class EditFragment : Fragment()/*, View.OnClickListener, BottomNavViewSwitcher *
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                item.name = name_entry.text.toString()
+                item.title = name_entry.text.toString()
                 checkCompleting()
             }
 
@@ -175,13 +156,13 @@ class EditFragment : Fragment()/*, View.OnClickListener, BottomNavViewSwitcher *
             when (i) {
                 R.id.type_good_habit -> {
 
-                    item.typeOfHabit = type_good_habit.text.toString()
-                    Toast.makeText(requireContext(), item.typeOfHabit, Toast.LENGTH_SHORT).show()
+                    item.type = type_good_habit.text.toString()
+                    Toast.makeText(requireContext(), item.type, Toast.LENGTH_SHORT).show()
                 }
                 R.id.type_bad_habit -> {
 
-                    item.typeOfHabit = type_bad_habit.text.toString()
-                    Toast.makeText(requireContext(), item.typeOfHabit, Toast.LENGTH_SHORT).show()
+                    item.type = type_bad_habit.text.toString()
+                    Toast.makeText(requireContext(), item.type, Toast.LENGTH_SHORT).show()
                 }
             }
             checkCompleting()
@@ -207,8 +188,9 @@ class EditFragment : Fragment()/*, View.OnClickListener, BottomNavViewSwitcher *
                     0
                 }
                 if (viewModel.frequencyOfExecs > 0) {
-                    item.periodicity =
-                            "${viewModel.countOfExecsOfHabit} ${getString(R.string.time_s_every)} ${viewModel.frequencyOfExecs} ${getString(R.string.days)}"
+                    item.count = viewModel.countOfExecsOfHabit
+                    item.frequency = viewModel.frequencyOfExecs
+                    viewModel.periodicity = "${viewModel.countOfExecsOfHabit} ${getString(R.string.time_s_every)} ${viewModel.frequencyOfExecs} ${getString(R.string.days)}"
                 }
                 checkCompleting()
             }
@@ -238,7 +220,7 @@ class EditFragment : Fragment()/*, View.OnClickListener, BottomNavViewSwitcher *
                 } catch (e: NumberFormatException) {
                     0
                 }
-                item.periodicity =
+                viewModel.periodicity =
                         "${viewModel.countOfExecsOfHabit} ${getString(R.string.time_s_every)} ${viewModel.frequencyOfExecs} ${getString(R.string.days)}"
                 checkCompleting()
             }
@@ -249,31 +231,42 @@ class EditFragment : Fragment()/*, View.OnClickListener, BottomNavViewSwitcher *
         })
 
         delete_button.setOnClickListener {
-            val habit = RecItem(name, description, priority, typeOfHabit, periodicity, countOfExecsOfHabit, frequencyOfExecs, color, id)
-            viewModel.delete(habit)
-            activity?.supportFragmentManager?.popBackStack()
-            activity?.supportFragmentManager?.beginTransaction()?.add(R.id.nav_host_fragment, HabitsFragment.newInstance())?.commit()
+
+            //viewModel.delete(habit)
+            //Toast.makeText(requireContext(), "${item.title}", Toast.LENGTH_SHORT).show()
+
+                //Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show()
+                viewModel.deleteFromServer(HabitUID(item.uid))
+
+
+            activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.nav_host_fragment, HabitsFragment.newInstance())?.commit()
             //switchFragment(R.id.navigation_habits, R.id.bottom_navigation_drawer)
 
         }
+
     }
 
     fun checkCompleting() {
-        if (item.name?.isNotEmpty() == true
-                && item.description?.isNotEmpty() == true
-                && item.priority?.isNotEmpty() == true
-                && item.typeOfHabit?.isNotEmpty() == true
-                && item.periodicity?.isNotEmpty() == true
+        if (item.title.isNotEmpty() == true
+                && item.description.isNotEmpty() == true
+                && item.priority.isNotEmpty() == true
+                && item.type.isNotEmpty() == true
+                && viewModel.periodicity.isNotEmpty() == true
                 && viewModel.countOfExecsOfHabit > 0
                 && viewModel.frequencyOfExecs > 0) {
             button_complete_creating_habit.visibility = View.VISIBLE
+
             button_complete_creating_habit.setOnClickListener {
-                item = RecItem(item.name, item.description, item.priority, item.typeOfHabit,
-                        item.periodicity, viewModel.countOfExecsOfHabit, viewModel.frequencyOfExecs,
-                        colorOfHabit, item.id)
-                viewModel.refreshHabit(item)
-                activity?.supportFragmentManager?.popBackStack()
-                activity?.supportFragmentManager?.beginTransaction()?.add(R.id.nav_host_fragment, HabitsFragment.newInstance())?.commit()
+                item = HabitForLocal(title = item.title, description =  item.description,
+                        priority = item.priority, type = item.type,
+                        count =  viewModel.countOfExecsOfHabit,
+                        frequency = viewModel.frequencyOfExecs,
+                        color = colorOfHabit, doneDates = item.doneDates, date = item.date+1,
+                        uid = item.uid)
+                val habitTServer = HabitsAndHabitsForLocalConverter().serializeToHabit(item)
+                viewModel.refreshHabitForLocal(item)
+                viewModel.refreshHabitForServer(habitTServer)
+                activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.nav_host_fragment, HabitsFragment.newInstance())?.commit()
                 //switchFragment(R.id.navigation_habits, R.id.bottom_navigation_drawer)
                 clear()
             }
@@ -353,5 +346,7 @@ class EditFragment : Fragment()/*, View.OnClickListener, BottomNavViewSwitcher *
 
         }
     }
+
+
 
 }

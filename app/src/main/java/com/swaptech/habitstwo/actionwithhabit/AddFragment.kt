@@ -16,21 +16,25 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.swaptech.habitstwo.*
 import com.swaptech.habitstwo.App.Companion.item
+import com.swaptech.habitstwo.model.HabitForLocal
 import com.swaptech.habitstwo.listhabits.HabitsFragment
-import com.swaptech.habitstwo.model.RecItem
+import com.swaptech.habitstwo.repository.HabitsAndHabitsForLocalConverter
 import kotlinx.android.synthetic.main.fragment_add.*
 
 class AddFragment: Fragment() {
 
     private var colorOfHabit = R.color.dark_grey
     private lateinit var viewModel: ActionsWithHabitFragmentViewModel
-    private val colorPickerItems: MutableList<Int> by lazy {  mutableListOf(R.id.color_1_button,
-            R.id.color_2_button, R.id.color_3_button, R.id.color_4_button, R.id.color_5_button,
-            R.id.color_6_button, R.id.color_7_button, R.id.color_8_button, R.id.color_9_button,
-            R.id.color_10_button, R.id.color_11_button, R.id.color_12_button, R.id.color_13_button,
-            R.id.color_14_button, R.id.color_15_button, R.id.color_16_button)  }
+    private val colorPickerItems: MutableList<Int> by lazy {
+        mutableListOf(R.id.color_1_button,
+                R.id.color_2_button, R.id.color_3_button, R.id.color_4_button, R.id.color_5_button,
+                R.id.color_6_button, R.id.color_7_button, R.id.color_8_button, R.id.color_9_button,
+                R.id.color_10_button, R.id.color_11_button, R.id.color_12_button, R.id.color_13_button,
+                R.id.color_14_button, R.id.color_15_button, R.id.color_16_button)
+    }
 
     companion object {
         fun newInstance() = AddFragment()
@@ -58,15 +62,15 @@ class AddFragment: Fragment() {
                     colorOfHabit = Color.parseColor(button.getButtonColor())
 
                 }
-                val hex = '#' + Integer.toHexString(colorOfHabit).substring(2)
-                Toast.makeText(requireContext(), "$colorOfHabit - $hex", Toast.LENGTH_SHORT).show()
+                //val hex = '#' + Integer.toHexString(colorOfHabit).substring(2)
+                //Toast.makeText(requireContext(), "$colorOfHabit - $hex", Toast.LENGTH_SHORT).show()
             }
         }
 
         name_entry.setOnKeyListener { _, i, keyEvent ->
             if (keyEvent.action == KeyEvent.ACTION_DOWN && (i == KeyEvent.KEYCODE_ENTER)) {
 
-                Toast.makeText(this.activity, viewModel.name, Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this.activity, viewModel.name, Toast.LENGTH_SHORT).show()
                 this.hide()
             }
             false
@@ -88,7 +92,7 @@ class AddFragment: Fragment() {
         })
 
         save_description.setOnClickListener {
-            Toast.makeText(this.activity, viewModel.description, Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this.activity, viewModel.description, Toast.LENGTH_SHORT).show()
             this.hide()
             save_description.visibility = View.GONE
         }
@@ -115,16 +119,16 @@ class AddFragment: Fragment() {
             when (i) {
                 R.id.type_good_habit -> {
                     viewModel.typeOfHabit = type_good_habit.text.toString()
-                    Toast.makeText(this.activity, viewModel.typeOfHabit, Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this.activity, viewModel.typeOfHabit, Toast.LENGTH_SHORT).show()
 
                 }
                 R.id.type_bad_habit -> {
                     viewModel.typeOfHabit = type_bad_habit.text.toString()
-                    Toast.makeText(this.activity, viewModel.typeOfHabit, Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this.activity, viewModel.typeOfHabit, Toast.LENGTH_SHORT).show()
                 }
             }
             checkCompleting()
-            Toast.makeText(this.activity, viewModel.priority, Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this.activity, viewModel.priority, Toast.LENGTH_SHORT).show()
         }
 
         num_of_execs_of_habit_entry.setOnKeyListener { _, i, keyEvent ->
@@ -190,36 +194,22 @@ class AddFragment: Fragment() {
         })
 
         button_complete_creating_habit.setOnClickListener {
+
             val result = checkCompleting()
             if (result) {
-                viewModel.habit = RecItem(
-                    viewModel.name, viewModel.description, viewModel.priority,
-                    viewModel.typeOfHabit, viewModel.periodicity,
-                    viewModel.countOfExecsOfHabit, viewModel.frequencyOfExecs, colorOfHabit, 0
-                )
-                if (viewModel.typeOfHabit == getString(R.string.good_radio_button)) {
-                    viewModel._goodHabits.add(viewModel.habit)
-                } else {
-                    viewModel._badHabits.add(viewModel.habit)
-                }
+                val habitForLocal = HabitForLocal(color = colorOfHabit,
+                        count = viewModel.countOfExecsOfHabit, date = 0,
+                        description = viewModel.description, doneDates = 1,
+                        frequency = viewModel.frequencyOfExecs, priority = viewModel.priority,
+                        title = viewModel.name, type = viewModel.typeOfHabit, uid = "")
 
-                viewModel.add()
-                Toast.makeText(
-                    this.activity,
-                    getString(R.string.successful_added_habit_toast),
-                    Toast.LENGTH_SHORT
-                ).show()
-                clear()
-                //findNavController().navigate(R.id.action_addFragment_to_habitsFragment)
-                activity?.supportFragmentManager?.popBackStack()
-                activity?.supportFragmentManager?.beginTransaction()
-                    ?.add(R.id.nav_host_fragment, HabitsFragment.newInstance())?.commit()
+                addHabit(habitForLocal)
+
             } else {
                 Toast.makeText(requireContext(), getString(R.string.error_adding_habit_toast), Toast.LENGTH_SHORT).show()
             }
         }
     }
-
 
     private fun Fragment.hide() {
         this.activity?.currentFocus.let {
@@ -238,9 +228,7 @@ class AddFragment: Fragment() {
                 && viewModel.frequencyOfExecs > 0) {
             return true
         }
-
         return false
-
     }
 
     private fun clear() {
@@ -252,7 +240,8 @@ class AddFragment: Fragment() {
         viewModel.priority = ""
         viewModel.typeOfHabit = ""
     }
-    inner class SpinnerClickListenerImpl: AdapterView.OnItemSelectedListener {
+
+    inner class SpinnerClickListenerImpl : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
             item.priority = parent?.getItemAtPosition(position).toString()
@@ -264,4 +253,36 @@ class AddFragment: Fragment() {
         }
     }
 
+    private fun addHabit(habitForLocal: HabitForLocal) {
+
+        val converter = HabitsAndHabitsForLocalConverter()
+        val habit = converter.serializeToHabit(habitForLocal)
+
+        if (App.isConnected.value == true) {
+
+            viewModel.addToServer(habit)
+
+            //Toast.makeText(requireContext(), "THIS HABIT - ${habit.uid}", Toast.LENGTH_LONG).show()
+
+            val habitToLocal = converter.deserializeToHabitForLocal(habit)
+            viewModel.addToLocal(habitToLocal)
+
+            clear()
+            activity?.supportFragmentManager?.popBackStack()
+            activity?.supportFragmentManager?.beginTransaction()
+                    ?.add(R.id.nav_host_fragment, HabitsFragment.newInstance())?.commit()
+
+            Toast.makeText(this.activity, getString(R.string.successful_added_habit_toast), Toast.LENGTH_SHORT).show()
+
+        } else {
+            this.view?.let { it1 ->
+                activity?.runOnUiThread {
+                    Snackbar.make(it1, "Cannot connect to server", Snackbar.LENGTH_INDEFINITE)
+                            .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
+                            .setAnchorView(button_complete_creating_habit)
+                            .setAction("retry") { addHabit(habitForLocal) }.show()
+                }
+            }
+        }
+    }
 }
