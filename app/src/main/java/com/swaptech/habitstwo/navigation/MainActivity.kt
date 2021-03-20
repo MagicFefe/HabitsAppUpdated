@@ -4,16 +4,20 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.content.IntentFilter
 import android.net.ConnectivityManager
+import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
+import com.bumptech.glide.Glide
+import com.swaptech.habitstwo.App
 import com.swaptech.habitstwo.CommonNetworkReceiver
+import com.swaptech.habitstwo.IMAGE_URL
 import com.swaptech.habitstwo.R
 import com.swaptech.habitstwo.actionwithhabit.AddFragment
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.header_nav_view.*
 
 
-
-class MainActivity : AppCompatActivity()/*, NavigationView.OnNavigationItemSelectedListener */ {
+class   MainActivity : AppCompatActivity()/*, NavigationView.OnNavigationItemSelectedListener */ {
 
     //private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -75,8 +79,16 @@ class MainActivity : AppCompatActivity()/*, NavigationView.OnNavigationItemSelec
 
 
         registerReceiver(CommonNetworkReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
-
-
+        Toast.makeText(this, "Tip: to load image, turn off internet and turn on again", Toast.LENGTH_LONG).show()
+        App.isConnected.observe(this, {
+            if(circle_image_view != null) {
+                Glide.with(this)
+                    .load(IMAGE_URL)
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_baseline_image_not_supported_24)
+                    .into(circle_image_view)
+            }
+        })
 
         //openFragment(HabitsFragment.newInstance())
     }
