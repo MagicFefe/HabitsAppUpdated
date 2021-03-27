@@ -9,30 +9,23 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.Button
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.snackbar.Snackbar
 import com.swaptech.data.models.HabitForLocal
 import com.swaptech.habitstwo.*
-import com.swaptech.habitstwo.App.Companion.item
-import com.swaptech.habitstwo.listhabits.HabitsFragment
+import com.swaptech.habitstwo.listhabits.HabitsListContainerFragment
+import com.swaptech.habitstwo.mapper.DateConverter
 import com.swaptech.habitstwo.mapper.HabitsAndHabitsForLocalConverter
 import kotlinx.android.synthetic.main.fragment_add.*
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runInterruptible
 import java.util.*
 import javax.inject.Inject
 
 class AddFragment: Fragment() {
 
     private var colorOfHabit = R.color.dark_grey
-
+    private val calendar = Calendar.getInstance()
     private val colorPickerItems: MutableList<Int> by lazy {
         mutableListOf(R.id.color_1_button,
                 R.id.color_2_button, R.id.color_3_button, R.id.color_4_button, R.id.color_5_button,
@@ -65,6 +58,10 @@ class AddFragment: Fragment() {
         }).get(ActionsWithHabitFragmentViewModel::class.java)
 
          */
+
+
+
+
         (requireActivity().application as App).applicationComponent.viewModelComponent().inject(this)
         return inflater.inflate(R.layout.fragment_add, container, false)
 
@@ -189,7 +186,6 @@ class AddFragment: Fragment() {
             if (keyEvent.action == KeyEvent.ACTION_DOWN && (i == KeyEvent.KEYCODE_ENTER)) {
                 this.hide()
             }
-
             false
         }
 
@@ -218,25 +214,22 @@ class AddFragment: Fragment() {
 
             val result = checkCompleting()
             if (result) {
+                val day = calendar.get(Calendar.DATE)
 
+                //Increment value, because in Calendar class num of month starts from zero
+                val month = calendar.get(Calendar.MONTH) + 1
+                val date = DateConverter().convertDayAndMonth(day, month)
                 val habitForLocal = HabitForLocal(color = colorOfHabit,
-                        count = viewModel.countOfExecsOfHabit, date = 0,
-                        description = viewModel.description, doneDates = 1,
-                        frequency = viewModel.frequencyOfExecs, priority = viewModel.priority,
-                        title = viewModel.name, type = viewModel.typeOfHabit, uid = "")
+                        count = viewModel.countOfExecsOfHabit, date = date,
+                        description = viewModel.description, frequency = viewModel.frequencyOfExecs,
+                        priority = viewModel.priority, title = viewModel.name,
+                        type = viewModel.typeOfHabit, uid = "")
 
                 addHabit(habitForLocal)
 
             } else {
                 Toast.makeText(requireContext(), getString(R.string.error_adding_habit_toast), Toast.LENGTH_SHORT).show()
             }
-        }
-    }
-
-    private fun Fragment.hide() {
-        this.activity?.currentFocus.let {
-            val g = view?.let { it1 -> ContextCompat.getSystemService(it1.context, InputMethodManager::class.java) }
-            g?.hideSoftInputFromWindow(it?.windowToken, 0)
         }
     }
 
@@ -265,9 +258,7 @@ class AddFragment: Fragment() {
 
     inner class SpinnerClickListenerImpl : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-            item.priority = parent?.getItemAtPosition(position).toString()
-            viewModel.priority = item.priority ?: ""
+            viewModel.priority = parent?.getItemAtPosition(position).toString()
         }
 
         override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -280,27 +271,20 @@ class AddFragment: Fragment() {
         val converter = HabitsAndHabitsForLocalConverter()
         val habit = converter.serializeToHabit(habitForLocal)
         viewModel.addToLocal(habitForLocal)
+
         if (App.isConnected.value == true) {
-            Toast.makeText(requireContext(), "${habit}", Toast.LENGTH_LONG).show()
 
             viewModel.addToServer(habit)
-
-            clear()
-            activity?.supportFragmentManager?.popBackStack()
-            activity?.supportFragmentManager?.beginTransaction()
-                    ?.add(R.id.nav_host_fragment, HabitsFragment.newInstance())?.commit()
-
-            Toast.makeText(this.activity, getString(R.string.successful_added_habit_toast), Toast.LENGTH_SHORT).show()
-
-        } else {
-            this.view?.let { it1 ->
-                activity?.runOnUiThread {
-                    Snackbar.make(it1, "Cannot connect to server", Snackbar.LENGTH_INDEFINITE)
-                            .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
-                            .setAnchorView(button_complete_creating_habit)
-                            .setAction("retry") { addHabit(habitForLocal) }.show()
-                }
-            }
         }
+        clear()
+        exitFromFragment()
+    }
+
+    private fun exitFromFragment() {
+        activity?.supportFragmentManager?.popBackStack()
+        activity?.supportFragmentManager?.inTransaction { transaction ->
+            transaction.add(R.id.nav_host_fragment, HabitsListContainerFragment.newInstance())
+        }
+        hide()
     }
 }

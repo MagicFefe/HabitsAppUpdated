@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetHabitsFromLocalUseCase @Inject constructor(private val repo: Repository) {
-    fun getHabitsFromLocal(): Flow<List<DatabaseHabit>> {
-        return repo.getHabitsFromLocal()
+    fun getHabitsFromLocal(priority: String): Flow<List<DatabaseHabit>>  {
+        return repo.getHabitsFromLocal(priority)
     }
 }

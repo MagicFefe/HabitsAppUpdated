@@ -2,28 +2,31 @@ package com.swaptech.habitstwo.listhabits
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.swaptech.habitstwo.R
 import com.swaptech.habitstwo.actionwithhabit.AddFragment
-import com.swaptech.habitstwo.implofelements.ViewPagerAdapter
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_habits.*
 import android.view.*
+import android.widget.Toast
+import com.swaptech.habitstwo.App
+import com.swaptech.habitstwo.hide
+import com.swaptech.habitstwo.inTransaction
+import javax.inject.Inject
 
-class HabitsFragment: Fragment() {
+class HabitsListContainerFragment: Fragment() {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
-    //private lateinit var viewModel: HabitsListViewModel
-
-
+    @Inject
+    lateinit var viewModel: HabitsListViewModel
+    private var page = -1
     companion object {
-        fun newInstance(): HabitsFragment {
-            return HabitsFragment()
+        private const val GOOD_HABITS = 0
+        private const val BAD_HABITS = 1
+        fun newInstance(): HabitsListContainerFragment {
+            return HabitsListContainerFragment()
         }
+
     }
 
     override fun onCreateView(
@@ -31,24 +34,69 @@ class HabitsFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //viewModel = ViewModelProvider(this).get(HabitsListViewModel::class.java)
+
+        (requireActivity().application as App).applicationComponent
+                .viewModelComponent().inject(this)
+
 
         return inflater.inflate(R.layout.fragment_habits, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+            when(page) {
+                //GOOD_HABITS -> tv_text?.text = "1"
+                //BAD_HABITS -> tv_text?.text = "2"
+            }
+
+        Toast.makeText(requireContext(), "$page", Toast.LENGTH_SHORT).show()
+    }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        view_pager.adapter = ViewPagerAdapter(childFragmentManager)
-        tab_layout.setupWithViewPager(view_pager)
+        //view_pager?.adapter = ViewPagerAdapter(childFragmentManager)
+        //tab_layout?.setupWithViewPager(view_pager)
+        /*
+        activity?.let { activity ->
+            view_pager.adapter = ViewPagerAdapter(activity as AppCompatActivity)
+            /*
+            TabLayoutMediator(tab_layout, view_pager) { tab, position ->
 
-        //Toast.makeText(requireContext(), "$typeOfHabit", Toast.LENGTH_SHORT).show()
+                when(position) {
+                    0 -> {
+
+                        tab.text = App.res?.getString(R.string.good_type_of_habit_view_pager)
+                    }
+                    else -> {
+                        tab.text = App.res?.getString(R.string.bad_type_of_habit_view_pager)
+                    }
+                }
+            }
+
+             */
+        }//?.attach()
+
+         */
+
+
+
+        /*
+        App.isConnected.observe(viewLifecycleOwner, {
+            if (it == true) {
+
+                viewModel.getHabits()
+            }
+        })
+
+         */
 
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (BottomSheetBehavior.STATE_DRAGGING == newState) {
-                    //add_habit_button.animate().scaleX(1F).scaleY(1F).setDuration(200).start()
                     reset_button.animate().scaleX(0F).scaleY(0F).setDuration(200).start()
 
                 } else if (BottomSheetBehavior.STATE_EXPANDED == newState && BottomSheetBehavior.STATE_COLLAPSED != newState) {
@@ -73,47 +121,44 @@ class HabitsFragment: Fragment() {
 
             }
         })
+
         reset_button.setOnClickListener {
             type_filter.text.clear()
-            HabitsListViewModel.searchFilter = null
+            HabitsListViewModel.searchFilter = ""
             openFragment()
         }
-        type_filter.setOnClickListener {
-            Toast.makeText(this.activity, getString(R.string.help_with_filter_toast), Toast.LENGTH_LONG).show()
-        }
+
         type_filter.setOnKeyListener { view, i, keyEvent ->
 
             if(keyEvent.action == KeyEvent.ACTION_DOWN && (i == KeyEvent.KEYCODE_ENTER)) {
-
-                if(type_filter.text.toString().isNotEmpty()) {
-                    HabitsListViewModel.searchFilter = type_filter.text.toString().toLowerCase()
-                    hide()
-                    openFragment()
+                val input = type_filter.text.toString()
+                if(input.isNotEmpty() && input.length > 1) {
+                    var searchFilter = type_filter.text.toString().toLowerCase()
+                    searchFilter = searchFilter[0].toUpperCase() + searchFilter.substring(1)
+                    HabitsListViewModel.searchFilter = searchFilter
                 } else {
-                    HabitsListViewModel.searchFilter = null
+                    HabitsListViewModel.searchFilter = ""
                 }
-
-
+                hide()
+                openFragment()
             }
+
             //If returns true, then editText lock back button by clicking, because we need to return false
             false
-
         }
 
         add_habit_button.setOnClickListener {
-            activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.nav_host_fragment, AddFragment.newInstance())?.addToBackStack(null)?.commit()
-
+            activity?.supportFragmentManager?.inTransaction { transaction ->
+                transaction.replace(R.id.nav_host_fragment, AddFragment.newInstance())
+                        .addToBackStack(null)
+            }
         }
     }
 
-    private fun Fragment.hide() {
-        this.activity?.currentFocus.let{
-            val view = view?.let { it1 -> ContextCompat.getSystemService(it1.context, InputMethodManager::class.java) }
-            view?.hideSoftInputFromWindow(it?.windowToken, 0)
-        }
-    }
     private fun openFragment() {
-        activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.nav_host_fragment, HabitsFragment.newInstance())?.commit()
+        activity?.supportFragmentManager?.inTransaction { transaction ->
+            transaction.replace(R.id.nav_host_fragment, HabitsListContainerFragment.newInstance())
+        }
     }
 }
 

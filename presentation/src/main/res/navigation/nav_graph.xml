@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/habitsFragment">
+    app:startDestination="@id/habitsContainerListFragment">
 
     <fragment
-        android:id="@+id/habitsFragment"
-        android:name="com.swaptech.habitstwo.listhabits.HabitsFragment"
+        android:id="@+id/habitsContainerListFragment"
+        android:name="com.swaptech.habitstwo.listhabits.HabitsListContainerFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_habits">
 
@@ -16,6 +16,7 @@
             app:destination="@id/addFragment"
             app:enterAnim="@anim/fragment_open_enter" />
     </fragment>
+
     <fragment
         android:id="@+id/aboutFragment"
         android:name="com.swaptech.habitstwo.navigation.AboutFragment"
@@ -36,4 +37,5 @@
             app:popEnterAnim="@anim/fragment_close_exit"
             app:popExitAnim="@anim/fragment_close_exit" />
     </fragment>
+
 </navigation>

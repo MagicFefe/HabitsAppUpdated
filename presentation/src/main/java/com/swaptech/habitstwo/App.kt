@@ -5,6 +5,8 @@ import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
 import com.swaptech.data.di.ContextModule
 import com.swaptech.data.models.HabitForLocal
+import com.swaptech.habitstwo.components.ApplicationComponent
+import com.swaptech.habitstwo.components.DaggerApplicationComponent
 
 class App : Application() {
     lateinit var applicationComponent: ApplicationComponent
@@ -13,6 +15,7 @@ class App : Application() {
         super.onCreate()
         res = resources
         applicationComponent = DaggerApplicationComponent.builder().contextModule(ContextModule(this)).build()
+
     }
 
     companion object {
@@ -22,9 +25,5 @@ class App : Application() {
 
         //Receiving connection state
         var isConnected = MutableLiveData(false)
-
-        //Exchanging data between fragments
-        var item: HabitForLocal = HabitForLocal(color = 0, count = 0, date = 0, description = "",
-                doneDates = 0, frequency = 0, priority = "", title = "", type = "", uid = "")
     }
 }

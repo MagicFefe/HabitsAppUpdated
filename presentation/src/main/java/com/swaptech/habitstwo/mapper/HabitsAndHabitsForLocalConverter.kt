@@ -7,6 +7,7 @@ import com.swaptech.habitstwo.R
 
 
 class HabitsAndHabitsForLocalConverter {
+
     private val good = App.res?.getString(R.string.good_radio_button)
     private val bad = App.res?.getString(R.string.bad_radio_button)
     private val high = App.res?.getString(R.string.high_priority)
@@ -32,10 +33,11 @@ class HabitsAndHabitsForLocalConverter {
                 priorityOfHabitInt = key
             }
         }
+
         val result = Habit(color = habit.color, count = habit.count, date = habit.date,
-                description = habit.description, doneDates = mutableListOf(habit.doneDates),
-                frequency = habit.frequency, priority = priorityOfHabitInt, title = habit.title,
-                type = typeOfHabitInt, uid = habit.uid)
+                description = habit.description, frequency = habit.frequency,
+                priority = priorityOfHabitInt, title = habit.title, type = typeOfHabitInt,
+                uid = habit.uid)
 
         return result
     }
@@ -58,9 +60,9 @@ class HabitsAndHabitsForLocalConverter {
         }
 
         val result = HabitForLocal(color = habit.color, count = habit.count, date = habit.date,
-                description = habit.description, doneDates = 0,
-                frequency = habit.frequency, priority = priorityOfHabitString, title = habit.title,
-                type = typeOfHabitString, uid = habit.uid)
+                description = habit.description, frequency = habit.frequency,
+                priority = priorityOfHabitString, title = habit.title, type = typeOfHabitString,
+                uid = habit.uid)
 
         return result
     }

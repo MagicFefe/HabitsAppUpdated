@@ -63,4 +63,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="5dp"
         />
+    <Button
+        android:id="@+id/check_box_completing_habit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="20dp"
+        android:text="@string/completed_habit"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

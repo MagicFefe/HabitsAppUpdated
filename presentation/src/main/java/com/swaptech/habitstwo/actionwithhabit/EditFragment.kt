@@ -10,63 +10,54 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.Button
 import android.widget.Toast
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.swaptech.data.models.HabitForLocal
 import com.swaptech.domain.models.HabitUID
 import com.swaptech.habitstwo.*
-import com.swaptech.habitstwo.App.Companion.item
-import com.swaptech.habitstwo.listhabits.HabitsFragment
+import com.swaptech.habitstwo.listhabits.HabitsListContainerFragment
+import com.swaptech.habitstwo.mapper.DateConverter
 import com.swaptech.habitstwo.mapper.HabitsAndHabitsForLocalConverter
 import kotlinx.android.synthetic.main.fragment_edit.*
 import java.lang.NumberFormatException
+import java.util.*
 import javax.inject.Inject
 
-class EditFragment : Fragment(){
+class EditFragment private constructor() : Fragment(){
+
     private var colorOfHabit = R.color.dark_grey
+
+    private val calendar = Calendar.getInstance()
 
     private val colorPickerItems: MutableList<Int> by lazy {  mutableListOf(R.id.color_1_button,
             R.id.color_2_button, R.id.color_3_button, R.id.color_4_button, R.id.color_5_button,
             R.id.color_6_button, R.id.color_7_button, R.id.color_8_button, R.id.color_9_button,
             R.id.color_10_button, R.id.color_11_button, R.id.color_12_button, R.id.color_13_button,
             R.id.color_14_button, R.id.color_15_button, R.id.color_16_button)  }
-    //access to color from everywhere(in class)
-    var color: Int = 0
+
+    private var item: HabitForLocal = HabitForLocal(color = 0, count = 0, date = 0, description = "",
+            doneDates = 0, frequency = 0, priority = "", title = "", type = "", uid = "")
+
+    companion object {
+        fun newInstance(editableFragment: HabitForLocal) = EditFragment().apply { item = editableFragment}
+    }
+
 
     @Inject
     lateinit var viewModel: ActionsWithHabitFragmentViewModel
 
-    companion object {
-        fun newInstance() = EditFragment()
-    }
+    //access to color from everywhere(in class)
+    var color: Int = 0
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        /*
-        val component = (requireActivity().application as App).applicationComponent
-        viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return ActionsWithHabitFragmentViewModel(
-                        component.getAddHabitUseCase(),
-                        component.getDeleteHabitUseCase(),
-                        component.getUpdateHabitUseCase(),
-                        component.getAddHabitToLocalUseCase()) as T
-            }
-        }).get(ActionsWithHabitFragmentViewModel::class.java)
-
-         */
-        (requireActivity().application as App).applicationComponent.viewModelComponent().inject(this)
+        (requireActivity().application as App).applicationComponent
+                .viewModelComponent().inject(this)
         return inflater.inflate(R.layout.fragment_edit, container, false)
-
     }
-
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -77,7 +68,6 @@ class EditFragment : Fragment(){
         val priority: String = item.priority ?: ""
         val countOfExecsOfHabit: Int = item.count
         val frequencyOfExecs: Int = item.frequency
-        val id: Int = item.count
         color = item.color
         colorOfHabit = color
         viewModel.name = name
@@ -95,13 +85,9 @@ class EditFragment : Fragment(){
                 val button = activity?.findViewById<Button>(viewId)
                 button?.let {
                     colorOfHabit = Color.parseColor(button.getButtonColor())
-
                 }
-
-                val hex = '#' + Integer.toHexString(colorOfHabit).substring(2)
-                Toast.makeText(requireContext(), "$colorOfHabit - $hex", Toast.LENGTH_SHORT).show()
-
-
+                //val hex = '#' + Integer.toHexString(colorOfHabit).substring(2)
+                //Toast.makeText(requireContext(), "$colorOfHabit - $hex", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -115,6 +101,7 @@ class EditFragment : Fragment(){
         } else {
             type_bad_habit.isChecked = true
         }
+
         when (item.priority) {
             getString(R.string.high_priority) -> priority_entry_activity.setSelection(0)
             getString(R.string.medium_priority) -> priority_entry_activity.setSelection(1)
@@ -122,6 +109,7 @@ class EditFragment : Fragment(){
         }
 
         checkCompleting()
+
         name_entry.setOnKeyListener { _, i, keyEvent ->
             if (keyEvent.action == KeyEvent.ACTION_DOWN && (i == KeyEvent.KEYCODE_ENTER)) {
                 Toast.makeText(requireContext(), item.title, Toast.LENGTH_SHORT).show()
@@ -248,17 +236,12 @@ class EditFragment : Fragment(){
         })
 
         delete_button.setOnClickListener {
-
-            //viewModel.delete(habit)
-            //Toast.makeText(requireContext(), "${item.title}", Toast.LENGTH_SHORT).show()
-
-                //Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show()
+            if(App.isConnected.value == true) {
                 viewModel.deleteFromServer(HabitUID(item.uid))
-
-
-            activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.nav_host_fragment, HabitsFragment.newInstance())?.commit()
-            //switchFragment(R.id.navigation_habits, R.id.bottom_navigation_drawer)
-
+            } else {
+                Toast.makeText(requireContext(), "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show()
+            }
+            openHabitsFragment()
         }
 
     }
@@ -274,75 +257,24 @@ class EditFragment : Fragment(){
             button_complete_creating_habit.visibility = View.VISIBLE
 
             button_complete_creating_habit.setOnClickListener {
+                val day = calendar.get(Calendar.DATE)
+                val month = calendar.get(Calendar.MONTH)
+                val date = DateConverter().convertDayAndMonth(day, month)
                 item = HabitForLocal(title = item.title, description =  item.description,
                         priority = item.priority, type = item.type,
                         count =  viewModel.countOfExecsOfHabit,
                         frequency = viewModel.frequencyOfExecs,
-                        color = colorOfHabit, doneDates = item.doneDates, date = item.date+1,
+                        color = colorOfHabit, doneDates = item.doneDates, date = date,
                         uid = item.uid)
                 val habitToServer = HabitsAndHabitsForLocalConverter().serializeToHabit(item)
-                //viewModel.refreshHabitForLocal(item)
+
                 viewModel.refreshHabitForServer(habitToServer)
-                activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.nav_host_fragment, HabitsFragment.newInstance())?.commit()
-                //switchFragment(R.id.navigation_habits, R.id.bottom_navigation_drawer)
+                openHabitsFragment()
+
                 clear()
             }
         }
     }
-
-    private fun Fragment.hide() {
-        this.activity?.currentFocus.let {
-            val g = view?.let { it1 -> ContextCompat.getSystemService(it1.context, InputMethodManager::class.java) }
-            g?.hideSoftInputFromWindow(it?.windowToken, 0)
-        }
-    }
-    /*
-    override fun switchFragment(viewId: Int, bottomNavViewId: Int) {
-        val bottomBar = activity?.findViewById<BottomNavigationView>(bottomNavViewId)
-        val view = bottomBar?.findViewById<View>(viewId)
-        view?.performClick()
-    }
-
-     */
-    /*
-    @SuppressLint("ResourceAsColor")
-    override fun onClick(view: View?) {
-        view?.let {
-            /*
-            when(view.id) {
-                R.id.color_1_button -> colorOfHabit = ContextCompat.getColor(requireContext(), R.color.green_color_picker)
-                R.id.color_2_button -> colorOfHabit = ContextCompat.getColor(requireContext(), R.color.red_color_picker)
-                R.id.color_3_button -> colorOfHabit = ContextCompat.getColor(requireContext(), R.color.cyan_color_picker)
-                R.id.color_4_button -> colorOfHabit = ContextCompat.getColor(requireContext(), R.color.purple_500)
-                R.id.color_5_button -> colorOfHabit = ContextCompat.getColor(requireContext(), R.color.purple)
-                R.id.color_6_button -> colorOfHabit = ContextCompat.getColor(requireContext(), R.color.light_blue_color_picker)
-                R.id.color_7_button -> colorOfHabit = ContextCompat.getColor(requireContext(), R.color.light_cyan_color_picker)
-                R.id.color_8_button -> colorOfHabit = ContextCompat.getColor(requireContext(), R.color.light_light_yellow_color_picker)
-                R.id.color_9_button -> colorOfHabit = ContextCompat.getColor(requireContext(), R.color.light_light_brown_color_picker)
-                R.id.color_10_button -> colorOfHabit = ContextCompat.getColor(requireContext(), R.color.light_light_green_color_picker)
-                R.id.color_11_button -> colorOfHabit = ContextCompat.getColor(requireContext(), R.color.light_pink_color_picker)
-                R.id.color_12_button -> colorOfHabit = ContextCompat.getColor(requireContext(), R.color.light_orange_color_picker)
-                R.id.color_13_button -> colorOfHabit = ContextCompat.getColor(requireContext(), R.color.light_purple_color_picker)
-                R.id.color_14_button -> colorOfHabit = ContextCompat.getColor(requireContext(), R.color.light_yellow_color_picker)
-                R.id.color_15_button -> colorOfHabit = ContextCompat.getColor(requireContext(), R.color.teal_200)
-                R.id.color_16_button -> colorOfHabit = ContextCompat.getColor(requireContext(), R.color.teal_700)
-            }
-            color = colorOfHabit
-            //val hex = '#' + Integer.toHexString(colorOfHabit).substring(2)
-            //Toast.makeText(requireContext(), "$colorOfHabit - $hex", Toast.LENGTH_SHORT).show()
-
-             */
-            val itemId = view.id
-            if (colorPickerItems.contains(itemId)) {
-                val buttonColorPicker = activity?.findViewById<Button>(itemId)
-                buttonColorPicker?.let {
-                    colorOfHabit = Color.parseColor(it.getButtonColor())
-                }
-            }
-        }
-    }
-
-     */
 
     private fun clear() {
         viewModel.name = ""
@@ -353,17 +285,20 @@ class EditFragment : Fragment(){
         viewModel.priority = ""
         viewModel.typeOfHabit = ""
     }
+
     inner class SpinnerClickListenerImpl: AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             item.priority = parent?.getItemAtPosition(position).toString()
-            viewModel.priority = item.priority ?: ""
+            viewModel.priority = item.priority
         }
 
         override fun onNothingSelected(p0: AdapterView<*>?) {
 
         }
     }
-
-
-
+    private fun openHabitsFragment() {
+        activity?.supportFragmentManager?.inTransaction {
+            it.replace(R.id.nav_host_fragment, HabitsListContainerFragment.newInstance())
+        }
+    }
 }

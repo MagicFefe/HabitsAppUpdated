@@ -9,12 +9,13 @@ import com.swaptech.domain.models.Habit
 import com.swaptech.domain.models.HabitDone
 import com.swaptech.domain.models.HabitUID
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import retrofit2.Response
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(private val api: Api,
                                          private val dao: HabitsFromServerDao): Repository {
-
+    //Networking
     override suspend fun getHabits(): Response<List<Habit>> {
         return api.getHabitsFromServer()
     }
@@ -35,8 +36,9 @@ class RepositoryImpl @Inject constructor(private val api: Api,
         return api.setHabitIsCompletedInServer(habitDone)
     }
 
-    override fun getHabitsFromLocal(): Flow<List<HabitForLocal>> {
-        return dao.getHabits()
+    //Local Interacting
+    override fun getHabitsFromLocal(priority: String): Flow<List<HabitForLocal>> {
+        return dao.getHabits(priority)
     }
 
     override suspend fun addHabitsToLocal(habit: DatabaseHabit) {
@@ -54,4 +56,6 @@ class RepositoryImpl @Inject constructor(private val api: Api,
     override fun deleteAllFromLocal() {
         dao.deleteAll()
     }
+
+
 }

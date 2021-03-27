@@ -1,10 +1,11 @@
 package com.swaptech.habitstwo.navigation
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
 import com.bumptech.glide.Glide
@@ -13,7 +14,9 @@ import com.swaptech.habitstwo.CommonNetworkReceiver
 import com.swaptech.habitstwo.IMAGE_URL
 import com.swaptech.habitstwo.R
 import com.swaptech.habitstwo.actionwithhabit.AddFragment
+import com.swaptech.habitstwo.implofelements.ViewPagerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_habits.*
 import kotlinx.android.synthetic.main.header_nav_view.*
 
 
@@ -53,7 +56,7 @@ class   MainActivity : AppCompatActivity()/*, NavigationView.OnNavigationItemSel
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(tool_bar)
-
+        view_pager?.adapter = ViewPagerAdapter(supportFragmentManager)
         //toggle = ActionBarDrawerToggle(this, main_layout, tool_bar, R.string.about_item_nav_drawer, R.string.home_item_nav_drawer)
         //main_layout.addDrawerListener(toggle)
 
@@ -96,6 +99,8 @@ class   MainActivity : AppCompatActivity()/*, NavigationView.OnNavigationItemSel
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+
+
 
     override fun onBackPressed() {
         if(supportFragmentManager.fragments.last() == AddFragment.newInstance())  {

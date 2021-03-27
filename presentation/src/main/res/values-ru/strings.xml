@@ -47,5 +47,6 @@
     <string name="version_of_app">Версия: Бета 2.0.0</string>
     <string name="welcome_splash">Добро пожаловать!</string>
     <string name="add_habit_title">Добавить привычку</string>
+    <string name="completed_habit">Выполнить привычку</string>
 
 </resources>

@@ -1,10 +1,12 @@
-package com.swaptech.habitstwo.recyclerview
+package com.swaptech.habitstwo.implofelements.recyclerview
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.DrawableCompat
@@ -17,7 +19,8 @@ import com.swaptech.habitstwo.R
 class Adapter(
         var items: MutableList<HabitForLocal>,
         val context: Context,
-        private val clickListener: RecyclerViewClickListener
+        private val clickListener: RecyclerViewClickListener,
+        private val buttonClickListener: ButtonOfRecViewClickListener
 )
     : RecyclerView.Adapter<Adapter.ViewHolder>() {
 
@@ -30,7 +33,7 @@ class Adapter(
         var priority = itemView.findViewById<TextView>(R.id.priority_habits_item)
         var typeOfHabit = itemView.findViewById<TextView>(R.id.type_habits_item)
         var periodicity = itemView.findViewById<TextView>(R.id.periodicity_habits_item)
-
+        var buttonOfRecView = itemView.findViewById<Button>(R.id.check_box_completing_habit)
 
         @SuppressLint("SetTextI18n")
         fun bind(habitForLocal: HabitForLocal, context: Context) {
@@ -43,9 +46,9 @@ class Adapter(
             itemView.setBackgroundColor(habitForLocal.color)
 
             //change color of drawable resource
-            color = habitForLocal.color
             val unwrappedDrawable = AppCompatResources.getDrawable(context, R.drawable.round_button)
             val wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable!!)
+            color = habitForLocal.color
             DrawableCompat.setTint(wrappedDrawable, color)
             itemView.setBackgroundResource(R.drawable.round_button)
         }
@@ -66,7 +69,9 @@ class Adapter(
         holder.itemView.setOnClickListener {
             clickListener.onRecyclerViewListClickListener(item, pos)
         }
-
+        holder.buttonOfRecView.setOnClickListener {
+            buttonClickListener.onCheckBoxOfRecViewClickListener(pos)
+        }
     }
 
     override fun getItemCount(): Int {

@@ -6,11 +6,13 @@ import com.swaptech.data.database.HabitsDatabase
 import com.swaptech.data.database.HabitsFromServerDao
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module
 class DatabaseModule {
 
     @Provides
+    @Singleton
     fun provideDatabase(context: Context): HabitsDatabase {
         return Room.databaseBuilder(context, HabitsDatabase::class.java, "fromServer").allowMainThreadQueries().build()
     }

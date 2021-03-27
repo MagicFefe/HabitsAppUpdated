@@ -31,7 +31,7 @@
     <string name="days">days</string>
     <string name="filter_bottom_sheet">Filter</string>
     <string name="reset_bottom_sheet">Reset</string>
-    <string name="type_high_medium_low_bottom_sheet">Type: High, Medium, Low</string>
+    <string name="type_high_medium_low_bottom_sheet">(Only for local data) Type: High, Medium, Low</string>
     <string name="no_logged_in_header_nav_drawer">NO LOGGED IN</string>
     <string name="logged_in_header_nav_drawer">SUCCESS</string>
     <string name="logged_in_successful_toast">Successfully signed in!</string>
@@ -45,4 +45,5 @@
     <string name="version_of_app">Version: Beta 2.0.0</string>
     <string name="welcome_splash">Welcome!</string>
     <string name="add_habit_title">Add habit</string>
+    <string name="completed_habit">Complete habit</string>
 </resources>
