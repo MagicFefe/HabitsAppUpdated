@@ -27,15 +27,14 @@
         android:name="com.swaptech.habitstwo.actionwithhabit.AddFragment"
         android:label="@string/add_habit_title"
         tools:layout="@layout/fragment_add">
-
-
         <action
             android:id="@+id/action_addFragment_to_habitsFragment"
-            app:destination="@id/habitsFragment"
+            app:destination="@id/habitsContainerListFragment"
 
             app:exitAnim="@anim/fragment_close_exit"
             app:popEnterAnim="@anim/fragment_close_exit"
             app:popExitAnim="@anim/fragment_close_exit" />
+
     </fragment>
 
 </navigation>

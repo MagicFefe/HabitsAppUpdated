@@ -1,28 +1,31 @@
 package com.swaptech.habitstwo.listhabits
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.swaptech.habitstwo.R
 import com.swaptech.habitstwo.actionwithhabit.AddFragment
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_habits.*
 import android.view.*
 import android.widget.Toast
-import com.swaptech.habitstwo.App
-import com.swaptech.habitstwo.hide
-import com.swaptech.habitstwo.inTransaction
+import androidx.lifecycle.LiveData
+import com.google.android.material.snackbar.Snackbar
+import com.swaptech.habitstwo.*
+import com.swaptech.habitstwo.implofelements.ViewPagerAdapter
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
-class HabitsListContainerFragment: Fragment() {
+class HabitsListContainerFragment: Fragment(), FragmentWithViewModel<HabitsListViewModel> {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
+
     @Inject
-    lateinit var viewModel: HabitsListViewModel
-    private var page = -1
+    override lateinit var viewModel: HabitsListViewModel
+
     companion object {
-        private const val GOOD_HABITS = 0
-        private const val BAD_HABITS = 1
+
         fun newInstance(): HabitsListContainerFragment {
             return HabitsListContainerFragment()
         }
@@ -42,55 +45,25 @@ class HabitsListContainerFragment: Fragment() {
         return inflater.inflate(R.layout.fragment_habits, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
-
-            when(page) {
-                //GOOD_HABITS -> tv_text?.text = "1"
-                //BAD_HABITS -> tv_text?.text = "2"
-            }
-
-        Toast.makeText(requireContext(), "$page", Toast.LENGTH_SHORT).show()
-    }
+    @ExperimentalCoroutinesApi
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        //view_pager?.adapter = ViewPagerAdapter(childFragmentManager)
-        //tab_layout?.setupWithViewPager(view_pager)
-        /*
-        activity?.let { activity ->
-            view_pager.adapter = ViewPagerAdapter(activity as AppCompatActivity)
-            /*
-            TabLayoutMediator(tab_layout, view_pager) { tab, position ->
+        view_pager?.adapter = ViewPagerAdapter(childFragmentManager, this)
+        tab_layout?.setupWithViewPager(view_pager)
 
-                when(position) {
-                    0 -> {
+        //viewModel.syncHabits(requireContext())
+        //Checking connection in ActivityCreated because NetworkReceiver registering in activity
 
-                        tab.text = App.res?.getString(R.string.good_type_of_habit_view_pager)
-                    }
-                    else -> {
-                        tab.text = App.res?.getString(R.string.bad_type_of_habit_view_pager)
-                    }
+        App.isConnected.observe(viewLifecycleOwner, {
+            if(it == true) {
+                if(viewModel.habitsFromDatabaseForSync.value?.isNotEmpty() == true) {
+                    viewModel.syncHabits()
+                } else {
+                    viewModel.getHabits()
                 }
             }
-
-             */
-        }//?.attach()
-
-         */
-
-
-
-        /*
-        App.isConnected.observe(viewLifecycleOwner, {
-            if (it == true) {
-
-                viewModel.getHabits()
-            }
         })
-
-         */
-
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -113,7 +86,6 @@ class HabitsListContainerFragment: Fragment() {
 
                     reset_button.animate().scaleX(0F).scaleY(0F).setDuration(200).start()
                     reset_button.visibility = View.GONE
-                    type_filter.text.clear()
                 }
             }
 
@@ -122,25 +94,19 @@ class HabitsListContainerFragment: Fragment() {
             }
         })
 
-        reset_button.setOnClickListener {
-            type_filter.text.clear()
-            HabitsListViewModel.searchFilter = ""
-            openFragment()
+        type_filter.onTextChangedListener {
+            var searchFilter = type_filter.text.toString().toLowerCase()
+            if(searchFilter.length > 1) {
+                searchFilter = searchFilter[0].toUpperCase() + searchFilter.substring(1)
+            }
+            HabitsListViewModel.searchFilter.value = searchFilter
         }
 
         type_filter.setOnKeyListener { view, i, keyEvent ->
 
             if(keyEvent.action == KeyEvent.ACTION_DOWN && (i == KeyEvent.KEYCODE_ENTER)) {
-                val input = type_filter.text.toString()
-                if(input.isNotEmpty() && input.length > 1) {
-                    var searchFilter = type_filter.text.toString().toLowerCase()
-                    searchFilter = searchFilter[0].toUpperCase() + searchFilter.substring(1)
-                    HabitsListViewModel.searchFilter = searchFilter
-                } else {
-                    HabitsListViewModel.searchFilter = ""
-                }
-                hide()
-                openFragment()
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                hideKeyboard()
             }
 
             //If returns true, then editText lock back button by clicking, because we need to return false
@@ -160,6 +126,7 @@ class HabitsListContainerFragment: Fragment() {
             transaction.replace(R.id.nav_host_fragment, HabitsListContainerFragment.newInstance())
         }
     }
+
 }
 
 

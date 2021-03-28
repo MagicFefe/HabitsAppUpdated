@@ -68,6 +68,7 @@ class EditFragment private constructor() : Fragment(){
         val priority: String = item.priority ?: ""
         val countOfExecsOfHabit: Int = item.count
         val frequencyOfExecs: Int = item.frequency
+
         color = item.color
         colorOfHabit = color
         viewModel.name = name
@@ -93,8 +94,8 @@ class EditFragment private constructor() : Fragment(){
 
         name_entry.setText(item.title)
         description_entry.setText(item.description)
-        period_of_exec_of_habit.setText(item.count.toString())
-        num_of_execs_of_habit_entry.setText(item.frequency.toString())
+        period_of_exec_of_habit.setText(item.frequency.toString())
+        num_of_execs_of_habit_entry.setText(item.count.toString())
 
         if (item.type == getString(R.string.good_radio_button)) {
             type_good_habit.isChecked = true
@@ -113,7 +114,7 @@ class EditFragment private constructor() : Fragment(){
         name_entry.setOnKeyListener { _, i, keyEvent ->
             if (keyEvent.action == KeyEvent.ACTION_DOWN && (i == KeyEvent.KEYCODE_ENTER)) {
                 Toast.makeText(requireContext(), item.title, Toast.LENGTH_SHORT).show()
-                this.hide()
+                this.hideKeyboard()
             }
             false
         }
@@ -135,7 +136,7 @@ class EditFragment private constructor() : Fragment(){
 
         save_description.setOnClickListener {
             save_description.visibility = View.GONE
-            this.hide()
+            this.hideKeyboard()
             Toast.makeText(requireContext(), item.description, Toast.LENGTH_SHORT).show()
         }
 
@@ -176,7 +177,7 @@ class EditFragment private constructor() : Fragment(){
 
         num_of_execs_of_habit_entry.setOnKeyListener { _, i, keyEvent ->
             if (keyEvent.action == KeyEvent.ACTION_DOWN && (i == KeyEvent.KEYCODE_ENTER)) {
-                this.hide()
+                this.hideKeyboard()
             }
             false
         }
@@ -208,7 +209,7 @@ class EditFragment private constructor() : Fragment(){
         period_of_exec_of_habit.setOnKeyListener { _, i, keyEvent ->
             if (keyEvent.action == KeyEvent.ACTION_DOWN && (i == KeyEvent.KEYCODE_ENTER)) {
                 Toast.makeText(requireContext(), item.priority, Toast.LENGTH_SHORT).show()
-                this.hide()
+                this.hideKeyboard()
             }
             checkCompleting()
             false
@@ -267,10 +268,12 @@ class EditFragment private constructor() : Fragment(){
                         color = colorOfHabit, doneDates = item.doneDates, date = date,
                         uid = item.uid)
                 val habitToServer = HabitsAndHabitsForLocalConverter().serializeToHabit(item)
-
-                viewModel.refreshHabitForServer(habitToServer)
+                if(App.isConnected.value == true) {
+                    viewModel.refreshHabitForServer(habitToServer)
+                } else {
+                    Toast.makeText(requireContext(), "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show()
+                }
                 openHabitsFragment()
-
                 clear()
             }
         }

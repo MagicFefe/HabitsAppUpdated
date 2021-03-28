@@ -31,7 +31,7 @@ class ActionsWithHabitFragmentViewModel constructor(
 
     fun addToServer(habit: Habit) {
         //Blocking main thread until habit is added to server
-        runBlocking<Unit> {
+        runBlocking {
             flow<Response<Any>> {
                 addHabitUseCase.addHabit(habit)
             }.flowOn(Dispatchers.IO).collect()

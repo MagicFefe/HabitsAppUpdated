@@ -15,9 +15,10 @@ import com.swaptech.habitstwo.implofelements.recyclerview.ButtonOfRecViewClickLi
 import com.swaptech.habitstwo.inTransaction
 import kotlinx.android.synthetic.main.fragment_bad_habits.*
 import javax.inject.Inject
-
-class BadHabitsFragment : Fragment(), RecyclerViewClickListener, ButtonOfRecViewClickListener {
-
+// TODO Remove this class
+/*
+class BadHabitsFragment : Fragment()/*, RecyclerViewClickListener, ButtonOfRecViewClickListener */ {
+    /*
     private val adapter: Adapter by lazy {
         Adapter(mutableListOf(), requireContext(), this, this)
     }
@@ -49,6 +50,8 @@ class BadHabitsFragment : Fragment(), RecyclerViewClickListener, ButtonOfRecView
 
     }
 
+     */
+    /*
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_bad_habits, container, false)
         (requireActivity().application as App).applicationComponent
@@ -56,29 +59,41 @@ class BadHabitsFragment : Fragment(), RecyclerViewClickListener, ButtonOfRecView
         return view
     }
 
+     */
+    /*
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        setRecyclerView()
+        //setRecyclerView()
 
-        viewModel.getHabitsFromLocal(HabitsListViewModel.searchFilter)
-
+        //viewModel.getHabitsFromLocal(HabitsListViewModel.searchFilter)
+        /*
         App.isConnected.observe(viewLifecycleOwner,  {
             if(it == true) {
                 viewModel.getHabits()
             }
         })
 
-
-
+         */
+        /*
         viewModel.badHabits.observe(viewLifecycleOwner, { habits ->
             habits?.let { adapter.updateData(it) }
         })
+
+         */
     }
 
+     */
+    /*
     private fun setRecyclerView() {
         rec_view_bad?.adapter = adapter
         rec_view_bad?.layoutManager = LinearLayoutManager(this.context)
     }
 
+
+     */
 }
+
+
+ */
+

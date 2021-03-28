@@ -82,5 +82,6 @@ class Adapter(
         items = habits
         notifyDataSetChanged()
     }
+
 }
 

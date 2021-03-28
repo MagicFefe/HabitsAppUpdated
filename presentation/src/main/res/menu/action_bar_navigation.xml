@@ -7,7 +7,7 @@
         <item
             android:title="@string/home_item_nav_drawer"
             android:icon="@drawable/ic_home_black_24dp"
-            android:id="@+id/habitsFragment"
+            android:id="@+id/habitsContainerListFragment"
             />
         <item
             android:title="@string/about_item_nav_drawer"

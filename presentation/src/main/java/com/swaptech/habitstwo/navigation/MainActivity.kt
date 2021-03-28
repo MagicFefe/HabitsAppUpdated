@@ -56,7 +56,7 @@ class   MainActivity : AppCompatActivity()/*, NavigationView.OnNavigationItemSel
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(tool_bar)
-        view_pager?.adapter = ViewPagerAdapter(supportFragmentManager)
+        //  view_pager?.adapter = ViewPagerAdapter(supportFragmentManager)
         //toggle = ActionBarDrawerToggle(this, main_layout, tool_bar, R.string.about_item_nav_drawer, R.string.home_item_nav_drawer)
         //main_layout.addDrawerListener(toggle)
 
@@ -72,7 +72,7 @@ class   MainActivity : AppCompatActivity()/*, NavigationView.OnNavigationItemSel
 
         val navController = findNavController(R.id.nav_host_fragment)
 
-        appBarConfiguration = AppBarConfiguration(setOf(R.id.habitsFragment, R.id.addFragment, R.id.aboutFragment), main_layout)
+        appBarConfiguration = AppBarConfiguration(setOf(R.id.habitsContainerListFragment, R.id.addFragment, R.id.aboutFragment), main_layout)
 
 
 

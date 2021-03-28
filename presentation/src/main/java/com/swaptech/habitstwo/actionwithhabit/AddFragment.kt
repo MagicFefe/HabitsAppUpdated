@@ -22,17 +22,17 @@ import kotlinx.android.synthetic.main.fragment_add.*
 import java.util.*
 import javax.inject.Inject
 
-class AddFragment: Fragment() {
+class AddFragment private constructor(): Fragment() {
 
     private var colorOfHabit = R.color.dark_grey
     private val calendar = Calendar.getInstance()
-    private val colorPickerItems: MutableList<Int> by lazy {
-        mutableListOf(R.id.color_1_button,
-                R.id.color_2_button, R.id.color_3_button, R.id.color_4_button, R.id.color_5_button,
-                R.id.color_6_button, R.id.color_7_button, R.id.color_8_button, R.id.color_9_button,
-                R.id.color_10_button, R.id.color_11_button, R.id.color_12_button, R.id.color_13_button,
-                R.id.color_14_button, R.id.color_15_button, R.id.color_16_button)
+    private val colorPickerItems: MutableList<Int> by lazy { mutableListOf(R.id.color_1_button,
+            R.id.color_2_button, R.id.color_3_button, R.id.color_4_button, R.id.color_5_button,
+            R.id.color_6_button, R.id.color_7_button, R.id.color_8_button, R.id.color_9_button,
+            R.id.color_10_button, R.id.color_11_button, R.id.color_12_button, R.id.color_13_button,
+            R.id.color_14_button, R.id.color_15_button, R.id.color_16_button)
     }
+
     @Inject
     lateinit var viewModel: ActionsWithHabitFragmentViewModel
 
@@ -45,26 +45,10 @@ class AddFragment: Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        /*
-        val component = (requireActivity().application as App).applicationComponent
-        viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return ActionsWithHabitFragmentViewModel(
-                        component.getAddHabitUseCase(),
-                        component.getDeleteHabitUseCase(),
-                        component.getUpdateHabitUseCase(),
-                        component.getAddHabitToLocalUseCase()) as T
-            }
-        }).get(ActionsWithHabitFragmentViewModel::class.java)
 
-         */
-
-
-
-
-        (requireActivity().application as App).applicationComponent.viewModelComponent().inject(this)
+        (requireActivity().application as App).applicationComponent
+                .viewModelComponent().inject(this)
         return inflater.inflate(R.layout.fragment_add, container, false)
-
     }
 
 
@@ -88,48 +72,28 @@ class AddFragment: Fragment() {
         name_entry.setOnKeyListener { _, i, keyEvent ->
             if (keyEvent.action == KeyEvent.ACTION_DOWN && (i == KeyEvent.KEYCODE_ENTER)) {
 
-                //Toast.makeText(this.activity, viewModel.name, Toast.LENGTH_SHORT).show()
-                this.hide()
+                hideKeyboard()
             }
             false
         }
 
-        name_entry.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.name = name_entry.text.toString()
-                checkCompleting()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-        })
+        name_entry.onTextChangedListener {
+            viewModel.name = name_entry.text.toString()
+            checkCompleting()
+        }
 
         save_description.setOnClickListener {
-            //Toast.makeText(this.activity, viewModel.description, Toast.LENGTH_SHORT).show()
-            this.hide()
+
+            hideKeyboard()
             save_description.visibility = View.GONE
         }
 
-        description_entry.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.description = description_entry.text.toString()
-                save_description.visibility = View.VISIBLE
-                checkCompleting()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-        })
+        description_entry.onTextChangedListener {
+            viewModel.description = description_entry.text.toString()
+            save_description.visibility = View.VISIBLE
+            checkCompleting()
+        }
 
         priority_entry_fragment.onItemSelectedListener = SpinnerClickListenerImpl()
 
@@ -137,78 +101,54 @@ class AddFragment: Fragment() {
             when (i) {
                 R.id.type_good_habit -> {
                     viewModel.typeOfHabit = type_good_habit.text.toString()
-                    //Toast.makeText(this.activity, viewModel.typeOfHabit, Toast.LENGTH_SHORT).show()
-
                 }
                 R.id.type_bad_habit -> {
                     viewModel.typeOfHabit = type_bad_habit.text.toString()
-                    //Toast.makeText(this.activity, viewModel.typeOfHabit, Toast.LENGTH_SHORT).show()
                 }
             }
             checkCompleting()
-            //Toast.makeText(this.activity, viewModel.priority, Toast.LENGTH_SHORT).show()
+
         }
 
         num_of_execs_of_habit_entry.setOnKeyListener { _, i, keyEvent ->
             if (keyEvent.action == KeyEvent.ACTION_DOWN && (i == KeyEvent.KEYCODE_ENTER)) {
-                this.hide()
+                this.hideKeyboard()
             }
             false
         }
 
-        num_of_execs_of_habit_entry.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
+        num_of_execs_of_habit_entry.onTextChangedListener {
+            viewModel.countOfExecsOfHabit = try {
+                num_of_execs_of_habit_entry?.text?.toString()?.toInt() ?: 0
+            } catch (e: NumberFormatException) {
+                0
             }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-                viewModel.countOfExecsOfHabit = try {
-                    num_of_execs_of_habit_entry?.text?.toString()?.toInt() ?: 0
-                } catch (e: NumberFormatException) {
-                    0
-                }
-                if (viewModel.frequencyOfExecs <= 0) {
-                    viewModel.periodicity = "${viewModel.countOfExecsOfHabit} ${getString(R.string.time_s_every)} "
-                } else {
-                    viewModel.periodicity =
-                            "${viewModel.countOfExecsOfHabit} ${getString(R.string.time_s_every)} ${viewModel.frequencyOfExecs} ${getString(R.string.days)}"
-                }
-                checkCompleting()
+            if (viewModel.frequencyOfExecs <= 0) {
+                viewModel.periodicity = "${viewModel.countOfExecsOfHabit} ${getString(R.string.time_s_every)} "
+            } else {
+                viewModel.periodicity =
+                        "${viewModel.countOfExecsOfHabit} ${getString(R.string.time_s_every)} ${viewModel.frequencyOfExecs} ${getString(R.string.days)}"
             }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-        })
+            checkCompleting()
+        }
 
         period_of_exec_of_habit.setOnKeyListener { _, i, keyEvent ->
             if (keyEvent.action == KeyEvent.ACTION_DOWN && (i == KeyEvent.KEYCODE_ENTER)) {
-                this.hide()
+                this.hideKeyboard()
             }
             false
         }
 
-        period_of_exec_of_habit.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
+        period_of_exec_of_habit.onTextChangedListener {
+            viewModel.frequencyOfExecs = try {
+                period_of_exec_of_habit?.text?.toString()?.toInt() ?: 0
+            } catch (e: NumberFormatException) {
+                0
             }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.frequencyOfExecs = try {
-                    period_of_exec_of_habit?.text?.toString()?.toInt() ?: 0
-                } catch (e: NumberFormatException) {
-                    0
-                }
-                viewModel.periodicity =
-                        "${viewModel.countOfExecsOfHabit} ${getString(R.string.time_s_every)} ${viewModel.frequencyOfExecs} ${getString(R.string.days)}"
-                checkCompleting()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-        })
+            viewModel.periodicity =
+                    "${viewModel.countOfExecsOfHabit} ${getString(R.string.time_s_every)} ${viewModel.frequencyOfExecs} ${getString(R.string.days)}"
+            checkCompleting()
+        }
 
         button_complete_creating_habit.setOnClickListener {
 
@@ -273,7 +213,6 @@ class AddFragment: Fragment() {
         viewModel.addToLocal(habitForLocal)
 
         if (App.isConnected.value == true) {
-
             viewModel.addToServer(habit)
         }
         clear()
@@ -285,6 +224,6 @@ class AddFragment: Fragment() {
         activity?.supportFragmentManager?.inTransaction { transaction ->
             transaction.add(R.id.nav_host_fragment, HabitsListContainerFragment.newInstance())
         }
-        hide()
+        hideKeyboard()
     }
 }

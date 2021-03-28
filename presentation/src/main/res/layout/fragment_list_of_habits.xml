@@ -4,14 +4,20 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".listhabits.GoodHabitsFragment">
+    tools:context=".listhabits.ListOfHabitsFragment">
 
     <com.google.android.material.tabs.TabLayout
         android:layout_width="match_parent"
         android:layout_height="42dp"
         android:visibility="invisible"
         android:layout_gravity="top"/>
-
+    <ProgressBar
+        android:id="@+id/progress_bar_list_of_habits_fragment"
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rec_view_good"
         android:layout_width="match_parent"

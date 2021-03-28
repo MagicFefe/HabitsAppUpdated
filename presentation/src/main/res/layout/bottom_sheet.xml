@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="126dp"
     app:behavior_hideable = "false"
@@ -36,7 +37,6 @@
         app:layout_constraintBottom_toTopOf="@id/type_filter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-
         android:visibility="invisible"/>
 
     <EditText
@@ -47,8 +47,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/my_purple_200"
-        android:hint="@string/type_high_medium_low_bottom_sheet"
         android:singleLine="true"
         android:textColorHighlight="@color/white"
-        android:imeOptions="actionSearch" />
+        android:imeOptions="actionSearch"
+        android:hint="@string/type_high_medium_low_bottom_sheet"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
