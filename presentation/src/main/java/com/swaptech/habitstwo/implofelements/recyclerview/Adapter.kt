@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.swaptech.data.models.HabitForLocal
@@ -33,7 +35,7 @@ class Adapter(
         var priority = itemView.findViewById<TextView>(R.id.priority_habits_item)
         var typeOfHabit = itemView.findViewById<TextView>(R.id.type_habits_item)
         var periodicity = itemView.findViewById<TextView>(R.id.periodicity_habits_item)
-        var buttonOfRecView = itemView.findViewById<Button>(R.id.check_box_completing_habit)
+        var buttonOfRecView = itemView.findViewById<ImageButton>(R.id.check_box_completing_habit)
 
         @SuppressLint("SetTextI18n")
         fun bind(habitForLocal: HabitForLocal, context: Context) {
@@ -51,6 +53,7 @@ class Adapter(
             color = habitForLocal.color
             DrawableCompat.setTint(wrappedDrawable, color)
             itemView.setBackgroundResource(R.drawable.round_button)
+            buttonOfRecView.setBackgroundResource(R.drawable.round_button)
         }
 
     }
@@ -70,7 +73,7 @@ class Adapter(
             clickListener.onRecyclerViewListClickListener(item, pos)
         }
         holder.buttonOfRecView.setOnClickListener {
-            buttonClickListener.onCheckBoxOfRecViewClickListener(pos)
+            buttonClickListener.onCheckBoxOfRecViewClickListener(item, pos)
         }
     }
 

@@ -3,24 +3,22 @@ package com.swaptech.habitstwo.actionwithhabit
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.KeyEvent
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Button
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.swaptech.data.models.HabitForLocal
 import com.swaptech.domain.models.HabitUID
 import com.swaptech.habitstwo.*
 import com.swaptech.habitstwo.listhabits.HabitsListContainerFragment
 import com.swaptech.habitstwo.mapper.DateConverter
 import com.swaptech.habitstwo.mapper.HabitsAndHabitsForLocalConverter
+import com.swaptech.habitstwo.navigation.MainActivity
 import kotlinx.android.synthetic.main.fragment_edit.*
-import java.lang.NumberFormatException
 import java.util.*
 import javax.inject.Inject
 
@@ -39,8 +37,16 @@ class EditFragment private constructor() : Fragment(){
     private var item: HabitForLocal = HabitForLocal(color = 0, count = 0, date = 0, description = "",
             doneDates = 0, frequency = 0, priority = "", title = "", type = "", uid = "")
 
+    private var nonEditableItem: HabitForLocal = HabitForLocal(color = 0, count = 0, date = 0, description = "",
+            doneDates = 0, frequency = 0, priority = "", title = "", type = "", uid = "")
+
     companion object {
-        fun newInstance(editableFragment: HabitForLocal) = EditFragment().apply { item = editableFragment}
+        fun newInstance(editableFragment: HabitForLocal): EditFragment {
+            return EditFragment().apply {
+                item = editableFragment
+                nonEditableItem = editableFragment
+            }
+        }
     }
 
 
@@ -59,13 +65,13 @@ class EditFragment private constructor() : Fragment(){
         return inflater.inflate(R.layout.fragment_edit, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val name: String = item.title ?: ""
-        val description: String = item.description ?: ""
-        val typeOfHabit: String = item.type ?: ""
-        val periodicity: String = "${item.doneDates} ${item.frequency}" ?: ""
-        val priority: String = item.priority ?: ""
+        val name: String = item.title
+        val description: String = item.description
+        val typeOfHabit: String = item.type
+        val periodicity = "${item.count} ${item.frequency}"
+        val priority: String = item.priority
         val countOfExecsOfHabit: Int = item.count
         val frequencyOfExecs: Int = item.frequency
 
@@ -119,41 +125,20 @@ class EditFragment private constructor() : Fragment(){
             false
         }
 
-        name_entry.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                item.title = name_entry.text.toString()
-                checkCompleting()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-        })
+        name_entry.onTextChangedListener { text ->
+            item.title = text.toString()
+            checkCompleting()
+        }
 
         save_description.setOnClickListener {
             save_description.visibility = View.GONE
             this.hideKeyboard()
-            Toast.makeText(requireContext(), item.description, Toast.LENGTH_SHORT).show()
         }
 
-        description_entry.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                item.description = description_entry.text.toString()
-                save_description.visibility = View.VISIBLE
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-        })
+        description_entry.onTextChangedListener { text ->
+            item.description = text.toString()
+            save_description.visibility = View.VISIBLE
+        }
 
         priority_entry_activity.onItemSelectedListener = SpinnerClickListenerImpl()
 
@@ -172,7 +157,6 @@ class EditFragment private constructor() : Fragment(){
                 }
             }
             checkCompleting()
-            Toast.makeText(requireContext(), item.priority, Toast.LENGTH_SHORT).show()
         }
 
         num_of_execs_of_habit_entry.setOnKeyListener { _, i, keyEvent ->
@@ -182,99 +166,96 @@ class EditFragment private constructor() : Fragment(){
             false
         }
 
-        num_of_execs_of_habit_entry.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
+        num_of_execs_of_habit_entry.onTextChangedListener { text ->
+            item.count = try {
+                text?.toString()?.toInt() ?: 0
+            } catch (e: NumberFormatException) {
+                0
             }
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.countOfExecsOfHabit = try {
-                    num_of_execs_of_habit_entry?.text?.toString()?.toInt() ?: 0
-                } catch (e: NumberFormatException) {
-                    0
-                }
-                if (viewModel.frequencyOfExecs > 0) {
-                    item.count = viewModel.countOfExecsOfHabit
-                    item.frequency = viewModel.frequencyOfExecs
-                    viewModel.periodicity = "${viewModel.countOfExecsOfHabit} ${getString(R.string.time_s_every)} ${viewModel.frequencyOfExecs} ${getString(R.string.days)}"
-                }
-                checkCompleting()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-        })
-
+            Toast.makeText(requireContext(), "${item.count}", Toast.LENGTH_SHORT).show()
+            checkCompleting()
+        }
         period_of_exec_of_habit.setOnKeyListener { _, i, keyEvent ->
             if (keyEvent.action == KeyEvent.ACTION_DOWN && (i == KeyEvent.KEYCODE_ENTER)) {
-                Toast.makeText(requireContext(), item.priority, Toast.LENGTH_SHORT).show()
                 this.hideKeyboard()
             }
             checkCompleting()
             false
         }
 
-        period_of_exec_of_habit.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
+        period_of_exec_of_habit.onTextChangedListener { text ->
+            item.frequency = try {
+                text?.toString()?.toInt() ?: 0
+            } catch (e: NumberFormatException) {
+                0
             }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.frequencyOfExecs = try {
-                    period_of_exec_of_habit?.text?.toString()?.toInt() ?: 0
-                } catch (e: NumberFormatException) {
-                    0
-                }
-                viewModel.periodicity =
-                        "${viewModel.countOfExecsOfHabit} ${getString(R.string.time_s_every)} ${viewModel.frequencyOfExecs} ${getString(R.string.days)}"
-                checkCompleting()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-        })
-
+            checkCompleting()
+        }
         delete_button.setOnClickListener {
             if(App.isConnected.value == true) {
                 viewModel.deleteFromServer(HabitUID(item.uid))
             } else {
-                Toast.makeText(requireContext(), "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.no_internet_toast), Toast.LENGTH_SHORT).show()
             }
             openHabitsFragment()
         }
 
     }
 
-    fun checkCompleting() {
-        if (item.title.isNotEmpty() == true
-                && item.description.isNotEmpty() == true
-                && item.priority.isNotEmpty() == true
-                && item.type.isNotEmpty() == true
-                && viewModel.periodicity.isNotEmpty() == true
-                && viewModel.countOfExecsOfHabit > 0
-                && viewModel.frequencyOfExecs > 0) {
+    private fun checkCompleting() {
+        if (item.title.isNotEmpty()
+                && item.description.isNotEmpty()
+                && item.priority.isNotEmpty()
+                && item.type.isNotEmpty()
+                && item.count > 0
+                && item.frequency > 0) {
+
             button_complete_creating_habit.visibility = View.VISIBLE
 
             button_complete_creating_habit.setOnClickListener {
-                val day = calendar.get(Calendar.DATE)
-                val month = calendar.get(Calendar.MONTH)
-                val date = DateConverter().convertDayAndMonth(day, month)
-                item = HabitForLocal(title = item.title, description =  item.description,
-                        priority = item.priority, type = item.type,
-                        count =  viewModel.countOfExecsOfHabit,
-                        frequency = viewModel.frequencyOfExecs,
-                        color = colorOfHabit, doneDates = item.doneDates, date = date,
-                        uid = item.uid)
-                val habitToServer = HabitsAndHabitsForLocalConverter().serializeToHabit(item)
-                if(App.isConnected.value == true) {
-                    viewModel.refreshHabitForServer(habitToServer)
+                if(viewModel.checkUniquenessOfTitle(item.title) || viewModel.nonUniqueHabit == item) {
+                    val dateConverter = DateConverter()
+                    val day = calendar.get(Calendar.DATE)
+                    val month = calendar.get(Calendar.MONTH)
+                    val seconds = calendar.get(Calendar.SECOND)
+                    val minutes = calendar.get(Calendar.MINUTE)
+                    val hour = calendar.get(Calendar.HOUR)
+
+                    var date = dateConverter.convertDayAndMonth(day, month+1)
+
+                    date = (date.toString() + hour + minutes + seconds).toInt()
+
+                    val endMonth = dateConverter.convertDaysToMonths(item.frequency)
+                    val endDay = item.frequency - dateConverter.convertMonthsToDays(endMonth)
+                    val endDate = dateConverter.generateEndDate(day, month, endDay, endMonth)
+
+                    item.apply {
+                        this.date = date
+                    }
+
+                    val editor = (requireActivity() as MainActivity).preferences.edit()
+
+                    editor.remove("${nonEditableItem.title} $APP_PREFERENCES_COUNT")
+                    editor.remove("${nonEditableItem.title} $APP_PREFERENCES_FINAL_DATE")
+
+                    editor.putInt("${item.title} $APP_PREFERENCES_COUNT", item.count)
+                    editor.putInt("${item.title} $APP_PREFERENCES_FINAL_DATE", endDate)
+
+                    editor.apply()
+
+                    val habitToServer = HabitsAndHabitsForLocalConverter().serializeToHabit(item)
+                    if(App.isConnected.value == true) {
+                        viewModel.refreshHabitForServer(habitToServer)
+                    } else {
+                        Toast.makeText(requireContext(), getString(R.string.no_internet_toast), Toast.LENGTH_SHORT).show()
+                    }
+                    openHabitsFragment()
+                    clear()
                 } else {
-                    Toast.makeText(requireContext(), "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Please, change title", Toast.LENGTH_SHORT).show()
                 }
-                openHabitsFragment()
-                clear()
             }
         }
     }

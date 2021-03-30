@@ -70,22 +70,17 @@ class HabitsListContainerFragment: Fragment(), FragmentWithViewModel<HabitsListV
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (BottomSheetBehavior.STATE_DRAGGING == newState) {
-                    reset_button.animate().scaleX(0F).scaleY(0F).setDuration(200).start()
+                    add_habit_button.animate().scaleX(0F).scaleY(0F).setDuration(200).start()
 
                 } else if (BottomSheetBehavior.STATE_EXPANDED == newState && BottomSheetBehavior.STATE_COLLAPSED != newState) {
 
                     add_habit_button.animate().scaleX(0F).scaleY(0F).setDuration(200).start()
                     add_habit_button.visibility = View.GONE
 
-                    reset_button.visibility = View.VISIBLE
-                    reset_button.animate().scaleX(1F).scaleY(1F).setDuration(200).start()
-
                 } else if (BottomSheetBehavior.STATE_EXPANDED != newState && BottomSheetBehavior.STATE_COLLAPSED == newState) {
                     add_habit_button.visibility = View.VISIBLE
                     add_habit_button.animate().scaleX(1F).scaleY(1F).setDuration(200).start()
 
-                    reset_button.animate().scaleX(0F).scaleY(0F).setDuration(200).start()
-                    reset_button.visibility = View.GONE
                 }
             }
 

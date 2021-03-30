@@ -3,8 +3,6 @@ package com.swaptech.habitstwo.actionwithhabit
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +16,7 @@ import com.swaptech.habitstwo.*
 import com.swaptech.habitstwo.listhabits.HabitsListContainerFragment
 import com.swaptech.habitstwo.mapper.DateConverter
 import com.swaptech.habitstwo.mapper.HabitsAndHabitsForLocalConverter
+import com.swaptech.habitstwo.navigation.MainActivity
 import kotlinx.android.synthetic.main.fragment_add.*
 import java.util.*
 import javax.inject.Inject
@@ -71,15 +70,13 @@ class AddFragment private constructor(): Fragment() {
 
         name_entry.setOnKeyListener { _, i, keyEvent ->
             if (keyEvent.action == KeyEvent.ACTION_DOWN && (i == KeyEvent.KEYCODE_ENTER)) {
-
                 hideKeyboard()
             }
             false
         }
 
-
-        name_entry.onTextChangedListener {
-            viewModel.name = name_entry.text.toString()
+        name_entry.onTextChangedListener { text ->
+            viewModel.name = text.toString()
             checkCompleting()
         }
 
@@ -89,8 +86,8 @@ class AddFragment private constructor(): Fragment() {
             save_description.visibility = View.GONE
         }
 
-        description_entry.onTextChangedListener {
-            viewModel.description = description_entry.text.toString()
+        description_entry.onTextChangedListener { text ->
+            viewModel.description = text.toString()
             save_description.visibility = View.VISIBLE
             checkCompleting()
         }
@@ -117,17 +114,11 @@ class AddFragment private constructor(): Fragment() {
             false
         }
 
-        num_of_execs_of_habit_entry.onTextChangedListener {
+        num_of_execs_of_habit_entry.onTextChangedListener { text ->
             viewModel.countOfExecsOfHabit = try {
-                num_of_execs_of_habit_entry?.text?.toString()?.toInt() ?: 0
+               text?.toString()?.toInt() ?: 0
             } catch (e: NumberFormatException) {
                 0
-            }
-            if (viewModel.frequencyOfExecs <= 0) {
-                viewModel.periodicity = "${viewModel.countOfExecsOfHabit} ${getString(R.string.time_s_every)} "
-            } else {
-                viewModel.periodicity =
-                        "${viewModel.countOfExecsOfHabit} ${getString(R.string.time_s_every)} ${viewModel.frequencyOfExecs} ${getString(R.string.days)}"
             }
             checkCompleting()
         }
@@ -139,14 +130,12 @@ class AddFragment private constructor(): Fragment() {
             false
         }
 
-        period_of_exec_of_habit.onTextChangedListener {
+        period_of_exec_of_habit.onTextChangedListener { text ->
             viewModel.frequencyOfExecs = try {
-                period_of_exec_of_habit?.text?.toString()?.toInt() ?: 0
+               text?.toString()?.toInt() ?: 0
             } catch (e: NumberFormatException) {
                 0
             }
-            viewModel.periodicity =
-                    "${viewModel.countOfExecsOfHabit} ${getString(R.string.time_s_every)} ${viewModel.frequencyOfExecs} ${getString(R.string.days)}"
             checkCompleting()
         }
 
@@ -154,18 +143,38 @@ class AddFragment private constructor(): Fragment() {
 
             val result = checkCompleting()
             if (result) {
+                val dateConverter = DateConverter()
                 val day = calendar.get(Calendar.DATE)
-
                 //Increment value, because in Calendar class num of month starts from zero
                 val month = calendar.get(Calendar.MONTH) + 1
-                val date = DateConverter().convertDayAndMonth(day, month)
-                val habitForLocal = HabitForLocal(color = colorOfHabit,
-                        count = viewModel.countOfExecsOfHabit, date = date,
-                        description = viewModel.description, frequency = viewModel.frequencyOfExecs,
-                        priority = viewModel.priority, title = viewModel.name,
-                        type = viewModel.typeOfHabit, uid = "")
+                val date = dateConverter.convertDayAndMonth(1, 2)
 
-                addHabit(habitForLocal)
+                val endMonth = dateConverter.convertDaysToMonths(viewModel.frequencyOfExecs)
+                val endDay = viewModel.frequencyOfExecs - dateConverter.convertMonthsToDays(endMonth)
+                val endDate = dateConverter.generateEndDate(day, month, endDay, endMonth)
+
+                if(viewModel.frequencyOfExecs <= MAX_VALUE_OF_FREQUENCY && viewModel.countOfExecsOfHabit <= MAX_VALUE_OF_COUNT) {
+                    if(viewModel.checkUniquenessOfTitle(viewModel.name)) {
+                        val habitForLocal = HabitForLocal(color = colorOfHabit,
+                                count = viewModel.countOfExecsOfHabit, date = date,
+                                description = viewModel.description, frequency = viewModel.frequencyOfExecs,
+                                priority = viewModel.priority, title = viewModel.name,
+                                type = viewModel.typeOfHabit, uid = "")
+
+                        val editor = (requireActivity() as MainActivity).preferences.edit()
+                        editor.putInt("${habitForLocal.title} $APP_PREFERENCES_COUNT_OF_EXECS", 0)
+                        editor.putInt("${habitForLocal.title} $APP_PREFERENCES_COUNT", habitForLocal.count)
+                        editor.putInt("${habitForLocal.title} $APP_PREFERENCES_FINAL_DATE", endDate)
+                        editor.apply()
+
+                        addHabit(habitForLocal)
+                    } else {
+                        Toast.makeText(requireContext(), "Please, change title", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                else {
+                    Toast.makeText(requireContext(), getString(R.string.too_big_numbers_toast), Toast.LENGTH_SHORT).show()
+                }
 
             } else {
                 Toast.makeText(requireContext(), getString(R.string.error_adding_habit_toast), Toast.LENGTH_SHORT).show()
@@ -178,7 +187,6 @@ class AddFragment private constructor(): Fragment() {
                 && viewModel.description.isNotEmpty()
                 && viewModel.priority.isNotEmpty()
                 && viewModel.typeOfHabit.isNotEmpty()
-                && viewModel.periodicity.isNotEmpty()
                 && viewModel.countOfExecsOfHabit > 0
                 && viewModel.frequencyOfExecs > 0) {
             return true

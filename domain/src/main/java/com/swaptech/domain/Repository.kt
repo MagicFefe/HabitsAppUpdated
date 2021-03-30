@@ -13,7 +13,8 @@ interface Repository {
     suspend fun addHabit(habit: Habit): Response<Any>
     suspend fun updateHabit(habit: Habit) : Response<HabitUID>
     suspend fun deleteHabit(habitUID: HabitUID): Response<Unit>
-    suspend fun setHabitIsCompletedInServer(habitDone: HabitDone): Response<Any>
+    suspend fun setHabitIsCompletedOnServer(habitDone: HabitDone): Response<Any>
+
 
     //Local Interacting
     fun getHabitsFromLocal(priority: String): Flow<List<DatabaseHabit>>

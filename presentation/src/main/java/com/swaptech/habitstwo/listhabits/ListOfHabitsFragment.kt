@@ -1,24 +1,25 @@
 package com.swaptech.habitstwo.listhabits
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.swaptech.data.models.HabitForLocal
-import com.swaptech.habitstwo.App
-import com.swaptech.habitstwo.R
+import com.swaptech.domain.models.HabitDone
+import com.swaptech.habitstwo.*
 import com.swaptech.habitstwo.actionwithhabit.EditFragment
 import com.swaptech.habitstwo.implofelements.recyclerview.Adapter
 import com.swaptech.habitstwo.implofelements.recyclerview.ButtonOfRecViewClickListener
 import com.swaptech.habitstwo.implofelements.recyclerview.RecyclerViewClickListener
-import com.swaptech.habitstwo.inTransaction
+import com.swaptech.habitstwo.mapper.DateConverter
+import com.swaptech.habitstwo.navigation.MainActivity
 import kotlinx.android.synthetic.main.fragment_list_of_habits.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import javax.inject.Inject
+import java.util.*
 
 
 class ListOfHabitsFragment private constructor(): Fragment(), RecyclerViewClickListener, ButtonOfRecViewClickListener {
@@ -40,6 +41,10 @@ class ListOfHabitsFragment private constructor(): Fragment(), RecyclerViewClickL
 
      */
     private var page = -1
+
+    private val typeGood = App.res?.getString(R.string.good_radio_button)
+    private val typeBad = App.res?.getString(R.string.bad_radio_button)
+    private val calendar = Calendar.getInstance()
 
     companion object {
         private const val GOOD_HABITS = 0
@@ -66,7 +71,52 @@ class ListOfHabitsFragment private constructor(): Fragment(), RecyclerViewClickL
 
     }
 
-    override fun onCheckBoxOfRecViewClickListener(position: Int) {
+    override fun onCheckBoxOfRecViewClickListener(habit: HabitForLocal, position: Int) {
+        var preferences: MutableMap<String, *> = (requireActivity() as MainActivity).preferences.all
+        val countOfExecsKey = "${habit.title} $APP_PREFERENCES_COUNT_OF_EXECS"
+        val countKey = "${habit.title} $APP_PREFERENCES_COUNT"
+        val finalDateKey = "${habit.title} $APP_PREFERENCES_FINAL_DATE"
+        if (preferences.containsKey(countOfExecsKey) && preferences.containsKey(countKey) && preferences.containsKey(finalDateKey)) {
+
+            val editor: SharedPreferences.Editor = (requireActivity() as MainActivity).preferences.edit()
+            val value = preferences[countOfExecsKey] as Int
+            editor.putInt(countOfExecsKey, value + 1)
+            editor.apply()
+            preferences = (requireActivity() as MainActivity).preferences.all
+            val countOfExecs = preferences[countOfExecsKey] as Int
+            val count = preferences[countKey] as Int
+            val finalDate = preferences[finalDateKey] as Int
+            val howManyNeedToDo = count - countOfExecs
+            val currDay = calendar.get(Calendar.DATE)
+            val currMonth = calendar.get(Calendar.MONTH) + 1
+            val currDate = DateConverter().convertDayAndMonth(currDay, currMonth)
+            Toast.makeText(requireContext(), "final - $finalDate", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "curr - $currDate", Toast.LENGTH_SHORT).show()
+            val currMonthConverted = currDate.toString().substring(currDate.toString().lastIndex - 1).toInt()
+            val finalMonthConverted = finalDate.toString().substring(finalDate.toString().lastIndex - 1).toInt()
+            if (currMonthConverted <= finalMonthConverted) {
+                if (habit.type == typeGood) {
+                    if (howManyNeedToDo > 0) {
+                        Toast.makeText(requireContext(), "Worth doing $howManyNeedToDo more times", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "You are breathtaking!", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    if (howManyNeedToDo > 0) {
+                        Toast.makeText(requireContext(), "Can be done $howManyNeedToDo more times", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "Stop doing it!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } else {
+
+                if (App.isConnected.value == true) {
+                    // TODO implement send to server, that habit done
+                    sharedViewModel.setHabitIsCompletedOnServer(HabitDone(currDate, habit.uid))
+                }
+                Toast.makeText(requireContext(), "Habit done", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     }
 
@@ -82,8 +132,7 @@ class ListOfHabitsFragment private constructor(): Fragment(), RecyclerViewClickL
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val typeGood = App.res?.getString(R.string.good_radio_button)
-        val typeBad = App.res?.getString(R.string.bad_radio_button)
+
 
         setRecyclerView()
 

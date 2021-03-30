@@ -88,7 +88,9 @@
                 android:inputType="number"
                 android:singleLine="true"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/type_entry" />
+                app:layout_constraintTop_toBottomOf="@id/type_entry"
+                android:hint="@string/max_10"
+                />
 
 
             <TextView
@@ -112,7 +114,8 @@
                 android:inputType="number"
                 android:singleLine="true"
                 app:layout_constraintTop_toBottomOf="@id/type_entry"
-                app:layout_constraintStart_toEndOf="@id/tv1" />
+                app:layout_constraintStart_toEndOf="@id/tv1"
+                android:hint="@string/max_31"/>
 
             <TextView
                 android:id="@+id/tv2"

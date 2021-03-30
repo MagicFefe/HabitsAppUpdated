@@ -1,6 +1,8 @@
 package com.swaptech.habitstwo
 
 import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
 import com.swaptech.data.di.ContextModule
@@ -15,14 +17,13 @@ class App : Application() {
         super.onCreate()
         res = resources
         applicationComponent = DaggerApplicationComponent.builder().contextModule(ContextModule(this)).build()
-
+        //val ok =
     }
 
     companion object {
         //Access to string resources in code
         var res: Resources? = null
             private set
-
         //Receiving connection state
         var isConnected = MutableLiveData(false)
     }

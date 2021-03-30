@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey
 import com.swaptech.domain.DatabaseHabit
 import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 @Entity(tableName = "HabitsLocal")
 data class HabitForLocal(
         override var color: Int = 0,
@@ -18,6 +17,7 @@ data class HabitForLocal(
         override var priority: String,
         override var title: String,
         override var type: String,
-        override var uid: String = "",
+        override var uid: String = ""
+) : DatabaseHabit
 
-) : Parcelable, DatabaseHabit
+

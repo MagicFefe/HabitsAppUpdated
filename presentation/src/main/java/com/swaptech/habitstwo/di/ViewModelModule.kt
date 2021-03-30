@@ -13,10 +13,11 @@ class ViewModelModule {
             addHabitUseCase: AddHabitUseCase,
             deleteHabitUseCase: DeleteHabitUseCase,
             refreshHabitUseCase: RefreshHabitUseCase,
-            addHabitToLocalUseCase: AddHabitToLocalUseCase): ActionsWithHabitFragmentViewModel {
+            addHabitToLocalUseCase: AddHabitToLocalUseCase,
+            getHabitsFromLocalUseCase: GetHabitsFromLocalUseCase): ActionsWithHabitFragmentViewModel {
 
         return ActionsWithHabitFragmentViewModel(addHabitUseCase, deleteHabitUseCase,
-                refreshHabitUseCase, addHabitToLocalUseCase)
+                refreshHabitUseCase, addHabitToLocalUseCase, getHabitsFromLocalUseCase)
     }
 
     @Provides
@@ -25,9 +26,10 @@ class ViewModelModule {
             getHabitsUseCase: GetHabitsUseCase,
             getHabitsFromLocalUseCase: GetHabitsFromLocalUseCase,
             deleteAllFromLocalUseCase: DeleteAllFromLocalUseCase,
-            addHabitUseCase: AddHabitUseCase): HabitsListViewModel {
+            addHabitUseCase: AddHabitUseCase,
+            setHabitIsCompletedOnServerUseCase: SetHabitIsCompletedOnServerUseCase): HabitsListViewModel {
 
         return HabitsListViewModel(addHabitToLocalUseCase, getHabitsUseCase,
-                getHabitsFromLocalUseCase, deleteAllFromLocalUseCase, addHabitUseCase)
+                getHabitsFromLocalUseCase, deleteAllFromLocalUseCase, addHabitUseCase, setHabitIsCompletedOnServerUseCase)
     }
 }

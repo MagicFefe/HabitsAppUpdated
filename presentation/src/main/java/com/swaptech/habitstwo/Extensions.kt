@@ -9,10 +9,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.viewModelScope
-import com.swaptech.habitstwo.listhabits.HabitsListViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 fun Button.getButtonColor(): String? {
     return this.tag?.toString()
@@ -30,7 +26,7 @@ fun Fragment.hideKeyboard() {
         inputMethodManager?.hideSoftInputFromWindow(it?.windowToken, 0)
     }
 }
-fun EditText.onTextChangedListener(block: () -> Unit) {
+fun EditText.onTextChangedListener(block: (Editable?) -> Unit) {
     this.addTextChangedListener(object: TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -41,7 +37,7 @@ fun EditText.onTextChangedListener(block: () -> Unit) {
         }
 
         override fun afterTextChanged(s: Editable?) {
-            block()
+            block(s)
         }
     })
 }

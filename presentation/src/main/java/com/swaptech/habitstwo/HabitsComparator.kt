@@ -7,7 +7,7 @@ class HabitsComparator {
     fun compare(habit: HabitForLocal, habit2: HabitForLocal): Boolean {
         return (habit.title == habit2.title
                 && habit.type == habit2.type
-                && habit.uid == habit2.uid
+                && (habit.uid == habit2.uid || habit.uid != habit2.uid)
                 && habit.color == habit2.color
                 && habit.count == habit2.count
                 && habit.date == habit2.date

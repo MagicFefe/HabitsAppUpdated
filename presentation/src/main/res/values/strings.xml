@@ -46,4 +46,9 @@
     <string name="welcome_splash">Welcome!</string>
     <string name="add_habit_title">Add habit</string>
     <string name="completed_habit">Complete habit</string>
+    <string name="max_10">max: 10</string>
+    <string name="max_31">max: 31</string>
+    <string name="too_big_numbers_toast">Too big numbers</string>
+    <string name="no_internet_toast">NO INTERNET CONNECTION</string>
+    <string name="image_tip_toast">Tip: to load image, turn off internet and turn on again</string>
 </resources>

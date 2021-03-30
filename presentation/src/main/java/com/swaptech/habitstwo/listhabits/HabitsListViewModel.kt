@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.lifecycle.*
 import com.swaptech.data.models.HabitForLocal
+import com.swaptech.domain.models.HabitDone
 import com.swaptech.domain.usecases.*
 import com.swaptech.habitstwo.HabitsComparator
 import com.swaptech.habitstwo.mapper.HabitsAndHabitsForLocalConverter
@@ -16,7 +17,8 @@ class HabitsListViewModel(
         private val getHabitsUseCase: GetHabitsUseCase,
         private val getHabitsFromLocalUseCase: GetHabitsFromLocalUseCase,
         private val deleteAllFromLocalUseCase: DeleteAllFromLocalUseCase,
-        private val addHabitUseCase: AddHabitUseCase) : ViewModel() {
+        private val addHabitUseCase: AddHabitUseCase,
+        private val setHabitIsCompletedOnServerUseCase: SetHabitIsCompletedOnServerUseCase) : ViewModel() {
 
     companion object {
         var searchFilter = MutableStateFlow("")
@@ -56,7 +58,6 @@ class HabitsListViewModel(
                 habitsFromServerList.addAll(responseFromServer)
 
                 this.launch(Dispatchers.Main) {
-
                     deleteAllFromLocal()
                     loadHabitsToLocal(habitsFromServerList)
                 }
@@ -88,6 +89,12 @@ class HabitsListViewModel(
                 }
             }
             getHabits()
+        }
+    }
+
+    fun setHabitIsCompletedOnServer(habitDone: HabitDone) {
+        viewModelScope.launch(Dispatchers.IO) {
+            setHabitIsCompletedOnServerUseCase.setHabitIsCompletedOnServer(habitDone)
         }
     }
 }

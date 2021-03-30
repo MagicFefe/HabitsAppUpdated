@@ -40,7 +40,7 @@
     <string name="error_log_in_toast">Что-то пошло не так</string>
     <string name="help_with_filter_toast">Нажмите на кнопку с лупой, чтобы начать поиск</string>
     <string name="successful_added_habit_toast">Привычка успешно добавлена</string>
-    <string name="error_adding_habit_toast">УбедитесьБ что все поля заполнены</string>
+    <string name="error_adding_habit_toast">Убедитесь, что все поля заполнены</string>
     <string name="good_type_of_habit_view_pager">Хорошие</string>
     <string name="bad_type_of_habit_view_pager">Плохие</string>
     <string name="delete_button_edit_activity">Удалить</string>
@@ -48,5 +48,9 @@
     <string name="welcome_splash">Добро пожаловать!</string>
     <string name="add_habit_title">Добавить привычку</string>
     <string name="completed_habit">Выполнить привычку</string>
-
+    <string name="max_10">макс: 10</string>
+    <string name="max_31">макс: 31</string>
+    <string name="too_big_numbers_toast">Слишком большие числа</string>
+    <string name="no_internet_toast">НЕТ ИНТЕРНЕТА</string>
+    <string name="image_tip_toast">Tip: to load image, turn off internet and turn on again</string>
 </resources>

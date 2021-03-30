@@ -10,5 +10,5 @@ data class Habit(
     var priority: Int,
     var title: String,
     var type: Int,
-    var uid: String = "",
+    var uid: String = ""
 )

@@ -1,22 +1,19 @@
 package com.swaptech.habitstwo.navigation
 
+import android.content.Context
 import android.os.Bundle
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
 import com.bumptech.glide.Glide
-import com.swaptech.habitstwo.App
-import com.swaptech.habitstwo.CommonNetworkReceiver
-import com.swaptech.habitstwo.IMAGE_URL
+import com.swaptech.habitstwo.*
 import com.swaptech.habitstwo.R
 import com.swaptech.habitstwo.actionwithhabit.AddFragment
-import com.swaptech.habitstwo.implofelements.ViewPagerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_habits.*
 import kotlinx.android.synthetic.main.header_nav_view.*
 
 
@@ -25,6 +22,9 @@ class   MainActivity : AppCompatActivity()/*, NavigationView.OnNavigationItemSel
     //private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var appBarConfiguration: AppBarConfiguration
 
+    val preferences: SharedPreferences by lazy {
+        getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+    }
     /*
     private val mOnNavigationViewClickListener = BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
         when(menuItem.itemId) {
@@ -82,7 +82,9 @@ class   MainActivity : AppCompatActivity()/*, NavigationView.OnNavigationItemSel
 
 
         registerReceiver(CommonNetworkReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
-        Toast.makeText(this, "Tip: to load image, turn off internet and turn on again", Toast.LENGTH_LONG).show()
+
+        Toast.makeText(this, getString(R.string.image_tip_toast), Toast.LENGTH_LONG).show()
+
         App.isConnected.observe(this, {
             if(circle_image_view != null) {
                 Glide.with(this)
@@ -92,15 +94,13 @@ class   MainActivity : AppCompatActivity()/*, NavigationView.OnNavigationItemSel
                     .into(circle_image_view)
             }
         })
-        //openFragment(HabitsFragment.newInstance())
     }
+
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-
-
 
     override fun onBackPressed() {
         if(supportFragmentManager.fragments.last() == AddFragment.newInstance())  {

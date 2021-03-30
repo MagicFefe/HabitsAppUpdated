@@ -9,7 +9,6 @@ import com.swaptech.domain.models.Habit
 import com.swaptech.domain.models.HabitDone
 import com.swaptech.domain.models.HabitUID
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -32,7 +31,7 @@ class RepositoryImpl @Inject constructor(private val api: Api,
         return api.deleteHabitFromServer(habitUID)
     }
 
-    override suspend fun setHabitIsCompletedInServer(habitDone:HabitDone): Response<Any> {
+    override suspend fun setHabitIsCompletedOnServer(habitDone:HabitDone): Response<Any> {
         return api.setHabitIsCompletedInServer(habitDone)
     }
 
@@ -56,6 +55,4 @@ class RepositoryImpl @Inject constructor(private val api: Api,
     override fun deleteAllFromLocal() {
         dao.deleteAll()
     }
-
-
 }
