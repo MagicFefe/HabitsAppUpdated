@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.header_nav_view.*
 
 
-class   MainActivity : AppCompatActivity()/*, NavigationView.OnNavigationItemSelectedListener */ {
+open class MainActivity : AppCompatActivity()/*, NavigationView.OnNavigationItemSelectedListener */ {
 
     //private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -78,7 +78,6 @@ class   MainActivity : AppCompatActivity()/*, NavigationView.OnNavigationItemSel
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         nav_drawer.setupWithNavController(navController)
-
 
 
         registerReceiver(CommonNetworkReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))

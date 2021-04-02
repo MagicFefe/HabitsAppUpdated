@@ -15,14 +15,14 @@ import com.swaptech.data.models.HabitForLocal
 import com.swaptech.domain.models.HabitUID
 import com.swaptech.habitstwo.*
 import com.swaptech.habitstwo.listhabits.HabitsListContainerFragment
-import com.swaptech.habitstwo.mapper.DateConverter
+import com.swaptech.habitstwo.DateConverter
 import com.swaptech.habitstwo.mapper.HabitsAndHabitsForLocalConverter
 import com.swaptech.habitstwo.navigation.MainActivity
 import kotlinx.android.synthetic.main.fragment_edit.*
 import java.util.*
 import javax.inject.Inject
 
-class EditFragment private constructor() : Fragment(){
+class EditFragment: Fragment(){
 
     private var colorOfHabit = R.color.dark_grey
 
@@ -62,6 +62,7 @@ class EditFragment private constructor() : Fragment(){
     ): View? {
         (requireActivity().application as App).applicationComponent
                 .viewModelComponent().inject(this)
+        viewModel.getHabitsFromLocal()
         return inflater.inflate(R.layout.fragment_edit, container, false)
     }
 

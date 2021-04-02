@@ -7,7 +7,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class ViewModelModule {
+open class ViewModelModule {
     @Provides
     fun provideActionsWithHabitFragmentViewModel(
             addHabitUseCase: AddHabitUseCase,

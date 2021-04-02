@@ -21,5 +21,5 @@ interface Api {
     suspend fun deleteHabitFromServer(@Body uid: HabitUID): Response<Unit>
 
     @POST("habit_done")
-    suspend fun setHabitIsCompletedInServer(habitDone: HabitDone): Response<Any>
+    suspend fun setHabitIsCompletedInServer(@Body habitDone: HabitDone): Response<Any>
 }

@@ -1,15 +1,28 @@
-package com.swaptech.habitstwo.mapper
+package com.swaptech.habitstwo
 
+import android.annotation.SuppressLint
+import androidx.annotation.StringDef
 import java.lang.Exception
+import java.lang.IllegalArgumentException
+import java.lang.annotation.RetentionPolicy
 import java.util.*
 
 //Format of date: dd-mm
 class DateConverter {
+
     private companion object {
         const val COUNT_OF_MONTHS = 12
         const val MAX_DAYS_FOR_ODD_MONTHS = 31
         const val MAX_DAYS_FOR_EVEN_MONTHS = 30
+
+
+
+
     }
+    enum class DateFormat {
+        DD_MM_FORMAT
+    }
+
 
     private val calendar = Calendar.getInstance()
     private val currentYear = calendar.get(Calendar.YEAR)
@@ -109,5 +122,37 @@ class DateConverter {
                 months * februaryDays
             }
         }
+    }
+
+
+    fun getDateFromInt(dateFormat: DateFormat, date: Int): List<Int> {
+        val dateForWorking = date.toString()
+        when(dateFormat) {
+            DateFormat.DD_MM_FORMAT -> {
+
+                if(dateForWorking.length > 4) {
+                    throw IllegalArgumentException("DATE IS TOO LONG!!!")
+                } else if(dateForWorking.length < 3) {
+                    throw IllegalArgumentException("DATE IS TOO SHORT!!!")
+                }
+
+                else {
+                    val day: Int
+                    val month: Int
+
+                    if (dateForWorking.length == 3) {
+                        day = dateForWorking[0].toInt()
+                        month = dateForWorking.substring(1).toInt()
+                    } else {
+                        day = dateForWorking.substring(0, 2).toInt()
+                        month = dateForWorking.substring(2).toInt()
+                    }
+
+                    return listOf(day, month)
+                }
+            }
+
+        }
+
     }
 }

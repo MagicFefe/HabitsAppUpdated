@@ -11,5 +11,4 @@ interface DatabaseHabit{
     var title: String
     var type: String
     var uid: String
-
 }

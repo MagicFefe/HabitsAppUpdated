@@ -11,7 +11,7 @@ import com.swaptech.habitstwo.HabitsComparator
 import com.swaptech.habitstwo.mapper.HabitsAndHabitsForLocalConverter
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-
+@ExperimentalCoroutinesApi
 class HabitsListViewModel(
         private val addHabitToLocalUseCase: AddHabitToLocalUseCase,
         private val getHabitsUseCase: GetHabitsUseCase,
@@ -24,22 +24,21 @@ class HabitsListViewModel(
         var searchFilter = MutableStateFlow("")
     }
 
-    @ExperimentalCoroutinesApi
+
     private val habitsFlow = searchFilter.flatMapLatest {
         getHabitsFromLocalUseCase.getHabitsFromLocal(it)
     }
-    @ExperimentalCoroutinesApi
+
     var habits = habitsFlow.asLiveData() as LiveData<MutableList<HabitForLocal>>
         private set
 
 
-    @ExperimentalCoroutinesApi
+
     var habitsFromDatabaseForSync = habits
 
     var position = 0
 
 
-    @ExperimentalCoroutinesApi
     fun getHabits() {
         viewModelScope.launch(Dispatchers.IO) {
             val habitsFromServerList = mutableListOf<HabitForLocal>()
@@ -70,7 +69,6 @@ class HabitsListViewModel(
         deleteAllFromLocalUseCase.deleteAllFromLocal()
     }
 
-    @ExperimentalCoroutinesApi
     private fun loadHabitsToLocal(habitsToLocal: MutableList<HabitForLocal>) {
         viewModelScope.launch {
             habitsToLocal.forEach { habit ->
@@ -79,16 +77,18 @@ class HabitsListViewModel(
         }
     }
 
-    @ExperimentalCoroutinesApi
+
     fun syncHabits() {
         viewModelScope.launch(Dispatchers.IO) {
             val converter = HabitsAndHabitsForLocalConverter()
+
             habitsFromDatabaseForSync.value?.forEach { habit ->
                 if (habit.uid == "") {
                     addHabitUseCase.addHabit(converter.serializeToHabit(habit))
                 }
             }
             getHabits()
+            habitsFromDatabaseForSync.value?.clear()
         }
     }
 

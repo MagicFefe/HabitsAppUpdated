@@ -1,6 +1,6 @@
 package com.swaptech.domain.models
 
-data class Habit(
+open class Habit(
     var color: Int = 1,
     var count: Int = 1,
     var date: Int = 1,

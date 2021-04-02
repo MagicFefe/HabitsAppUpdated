@@ -15,29 +15,30 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import org.jetbrains.annotations.TestOnly
 import retrofit2.Response
 
-class ActionsWithHabitFragmentViewModel constructor(
+open class ActionsWithHabitFragmentViewModel constructor(
         private val addHabitUseCase: AddHabitUseCase,
         private val deleteHabitUseCase: DeleteHabitUseCase,
         private val refreshHabitUseCase: RefreshHabitUseCase,
         private val addHabitToLocalUseCase: AddHabitToLocalUseCase,
         private val getHabitsFromLocalUseCase: GetHabitsFromLocalUseCase) : ViewModel() {
 
-    var name = ""
-    var description = ""
-    var priority = ""
-    var typeOfHabit = ""
-    var periodicity = ""
-    var countOfExecsOfHabit = 0
-    var frequencyOfExecs = 0
+    var name: String = ""
+    var description: String = ""
+    var priority: String = ""
+    var typeOfHabit: String = ""
+    var periodicity: String = ""
+    var countOfExecsOfHabit: Int = 0
+    var frequencyOfExecs: Int = 0
 
     private val _habits = MutableLiveData<List<HabitForLocal>>()
-    val habits: LiveData<List<HabitForLocal>> = _habits
 
     var nonUniqueHabit = HabitForLocal(color = 0, count = 0, date = 0, description = "",
             doneDates = 0, frequency = 0, priority = "", title = "", type = "", uid = "")
     private set
+
     fun addToServer(habit: Habit) {
         //Blocking main thread until habit is added to server
         runBlocking {
@@ -45,10 +46,6 @@ class ActionsWithHabitFragmentViewModel constructor(
                 addHabitUseCase.addHabit(habit)
             }.flowOn(Dispatchers.IO).collect()
         }
-    }
-
-    init {
-        getHabitsFromLocal()
     }
 
     fun checkUniquenessOfTitle(title: String): Boolean {
@@ -64,17 +61,18 @@ class ActionsWithHabitFragmentViewModel constructor(
         viewModelScope.launch {
             deleteHabitUseCase.deleteHabitUseCase(habitUID)
         }
-
     }
-    private fun getHabitsFromLocal() {
+
+    fun getHabitsFromLocal() {
         viewModelScope.launch {
             getHabitsFromLocalUseCase.getHabitsFromLocal("")
                     .flowOn(Dispatchers.IO)
                     .collect {
-                 _habits.value = it as List<HabitForLocal>
-            }
+                        _habits.value = it as List<HabitForLocal>
+                    }
         }
     }
+
     fun refreshHabitForServer(habit: Habit) {
         viewModelScope.launch {
             refreshHabitUseCase.updateHabit(habit)

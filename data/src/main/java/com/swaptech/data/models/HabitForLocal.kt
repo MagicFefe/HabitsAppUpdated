@@ -7,7 +7,7 @@ import com.swaptech.domain.DatabaseHabit
 import kotlinx.android.parcel.Parcelize
 
 @Entity(tableName = "HabitsLocal")
-data class HabitForLocal(
+open class HabitForLocal(
         override var color: Int = 0,
         override var count: Int,
         override var date: Int,

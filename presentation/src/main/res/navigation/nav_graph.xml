@@ -14,7 +14,7 @@
         <action
             android:id="@+id/action_habitsFragment_to_addFragment2"
             app:destination="@id/addFragment"
-            app:enterAnim="@anim/fragment_open_enter" />
+            app:enterAnim="@anim/nav_default_pop_enter_anim" />
     </fragment>
 
     <fragment
@@ -30,11 +30,7 @@
         <action
             android:id="@+id/action_addFragment_to_habitsFragment"
             app:destination="@id/habitsContainerListFragment"
-
-            app:exitAnim="@anim/fragment_close_exit"
-            app:popEnterAnim="@anim/fragment_close_exit"
-            app:popExitAnim="@anim/fragment_close_exit" />
-
+            app:exitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
 
 </navigation>

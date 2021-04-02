@@ -21,7 +21,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".navigation.MainActivity">
+        <activity android:name=".navigation.MainActivity" android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

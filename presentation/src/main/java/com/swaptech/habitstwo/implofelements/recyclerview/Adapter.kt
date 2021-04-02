@@ -45,15 +45,20 @@ class Adapter(
             priority.text = habitForLocal.priority
             typeOfHabit.text = habitForLocal.type
             periodicity.text = "${habitForLocal.count} ${context.getString(R.string.time_s_every)} ${habitForLocal.frequency} ${context.getString(R.string.days)}"
-            itemView.setBackgroundColor(habitForLocal.color)
+            color = habitForLocal.color
+
+            itemView.setBackgroundColor(color)
+            buttonOfRecView.setBackgroundColor(color)
 
             //change color of drawable resource
             val unwrappedDrawable = AppCompatResources.getDrawable(context, R.drawable.round_button)
             val wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable!!)
-            color = habitForLocal.color
+
             DrawableCompat.setTint(wrappedDrawable, color)
+
             itemView.setBackgroundResource(R.drawable.round_button)
             buttonOfRecView.setBackgroundResource(R.drawable.round_button)
+            color = 0
         }
 
     }
@@ -68,7 +73,7 @@ class Adapter(
         val item = items[position]
         val pos = holder.adapterPosition
         holder.bind(item, context)
-
+        color = 0
         holder.itemView.setOnClickListener {
             clickListener.onRecyclerViewListClickListener(item, pos)
         }

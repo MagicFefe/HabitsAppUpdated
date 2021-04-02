@@ -14,14 +14,14 @@ import androidx.fragment.app.Fragment
 import com.swaptech.data.models.HabitForLocal
 import com.swaptech.habitstwo.*
 import com.swaptech.habitstwo.listhabits.HabitsListContainerFragment
-import com.swaptech.habitstwo.mapper.DateConverter
+import com.swaptech.habitstwo.DateConverter
 import com.swaptech.habitstwo.mapper.HabitsAndHabitsForLocalConverter
 import com.swaptech.habitstwo.navigation.MainActivity
 import kotlinx.android.synthetic.main.fragment_add.*
 import java.util.*
 import javax.inject.Inject
 
-class AddFragment private constructor(): Fragment() {
+class AddFragment: Fragment() {
 
     private var colorOfHabit = R.color.dark_grey
     private val calendar = Calendar.getInstance()
@@ -47,6 +47,7 @@ class AddFragment private constructor(): Fragment() {
 
         (requireActivity().application as App).applicationComponent
                 .viewModelComponent().inject(this)
+        viewModel.getHabitsFromLocal()
         return inflater.inflate(R.layout.fragment_add, container, false)
     }
 
@@ -143,18 +144,18 @@ class AddFragment private constructor(): Fragment() {
 
             val result = checkCompleting()
             if (result) {
-                val dateConverter = DateConverter()
-                val day = calendar.get(Calendar.DATE)
-                //Increment value, because in Calendar class num of month starts from zero
-                val month = calendar.get(Calendar.MONTH) + 1
-                val date = dateConverter.convertDayAndMonth(1, 2)
-
-                val endMonth = dateConverter.convertDaysToMonths(viewModel.frequencyOfExecs)
-                val endDay = viewModel.frequencyOfExecs - dateConverter.convertMonthsToDays(endMonth)
-                val endDate = dateConverter.generateEndDate(day, month, endDay, endMonth)
-
                 if(viewModel.frequencyOfExecs <= MAX_VALUE_OF_FREQUENCY && viewModel.countOfExecsOfHabit <= MAX_VALUE_OF_COUNT) {
                     if(viewModel.checkUniquenessOfTitle(viewModel.name)) {
+                        val dateConverter = DateConverter()
+                        val day = calendar.get(Calendar.DATE)
+                        //Increment value, because in Calendar class num of month starts from zero
+                        val month = calendar.get(Calendar.MONTH) + 1
+                        val date = dateConverter.convertDayAndMonth(day, month)
+
+                        val endMonth = dateConverter.convertDaysToMonths(viewModel.frequencyOfExecs)
+                        val endDay = viewModel.frequencyOfExecs - dateConverter.convertMonthsToDays(endMonth)
+                        val endDate = dateConverter.generateEndDate(day, month, endDay, endMonth)
+
                         val habitForLocal = HabitForLocal(color = colorOfHabit,
                                 count = viewModel.countOfExecsOfHabit, date = date,
                                 description = viewModel.description, frequency = viewModel.frequencyOfExecs,
@@ -162,6 +163,7 @@ class AddFragment private constructor(): Fragment() {
                                 type = viewModel.typeOfHabit, uid = "")
 
                         val editor = (requireActivity() as MainActivity).preferences.edit()
+                        //put zero because we haven't done the habit yet
                         editor.putInt("${habitForLocal.title} $APP_PREFERENCES_COUNT_OF_EXECS", 0)
                         editor.putInt("${habitForLocal.title} $APP_PREFERENCES_COUNT", habitForLocal.count)
                         editor.putInt("${habitForLocal.title} $APP_PREFERENCES_FINAL_DATE", endDate)
@@ -182,7 +184,7 @@ class AddFragment private constructor(): Fragment() {
         }
     }
 
-    fun checkCompleting(): Boolean {
+    private fun checkCompleting(): Boolean {
         if (viewModel.name.isNotEmpty()
                 && viewModel.description.isNotEmpty()
                 && viewModel.priority.isNotEmpty()

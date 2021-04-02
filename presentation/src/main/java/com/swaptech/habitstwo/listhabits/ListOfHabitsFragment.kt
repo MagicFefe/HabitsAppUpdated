@@ -15,14 +15,14 @@ import com.swaptech.habitstwo.actionwithhabit.EditFragment
 import com.swaptech.habitstwo.implofelements.recyclerview.Adapter
 import com.swaptech.habitstwo.implofelements.recyclerview.ButtonOfRecViewClickListener
 import com.swaptech.habitstwo.implofelements.recyclerview.RecyclerViewClickListener
-import com.swaptech.habitstwo.mapper.DateConverter
+import com.swaptech.habitstwo.DateConverter
 import com.swaptech.habitstwo.navigation.MainActivity
 import kotlinx.android.synthetic.main.fragment_list_of_habits.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.*
 
 
-class ListOfHabitsFragment private constructor(): Fragment(), RecyclerViewClickListener, ButtonOfRecViewClickListener {
+class ListOfHabitsFragment: Fragment(), RecyclerViewClickListener, ButtonOfRecViewClickListener {
 
     private val adapter by lazy {
         Adapter(mutableListOf(), requireContext(), this, this)
@@ -58,6 +58,7 @@ class ListOfHabitsFragment private constructor(): Fragment(), RecyclerViewClickL
         }
     }
 
+    @ExperimentalCoroutinesApi
     override fun onRecyclerViewListClickListener(habit: HabitForLocal, position: Int) {
 
         sharedViewModel.position = position
@@ -71,12 +72,16 @@ class ListOfHabitsFragment private constructor(): Fragment(), RecyclerViewClickL
 
     }
 
+    @ExperimentalCoroutinesApi
     override fun onCheckBoxOfRecViewClickListener(habit: HabitForLocal, position: Int) {
         var preferences: MutableMap<String, *> = (requireActivity() as MainActivity).preferences.all
         val countOfExecsKey = "${habit.title} $APP_PREFERENCES_COUNT_OF_EXECS"
         val countKey = "${habit.title} $APP_PREFERENCES_COUNT"
         val finalDateKey = "${habit.title} $APP_PREFERENCES_FINAL_DATE"
-        if (preferences.containsKey(countOfExecsKey) && preferences.containsKey(countKey) && preferences.containsKey(finalDateKey)) {
+        val dateConverter = DateConverter()
+        if (preferences.containsKey(countOfExecsKey)
+                && preferences.containsKey(countKey)
+                && preferences.containsKey(finalDateKey)) {
 
             val editor: SharedPreferences.Editor = (requireActivity() as MainActivity).preferences.edit()
             val value = preferences[countOfExecsKey] as Int
@@ -89,9 +94,9 @@ class ListOfHabitsFragment private constructor(): Fragment(), RecyclerViewClickL
             val howManyNeedToDo = count - countOfExecs
             val currDay = calendar.get(Calendar.DATE)
             val currMonth = calendar.get(Calendar.MONTH) + 1
-            val currDate = DateConverter().convertDayAndMonth(currDay, currMonth)
-            Toast.makeText(requireContext(), "final - $finalDate", Toast.LENGTH_SHORT).show()
-            Toast.makeText(requireContext(), "curr - $currDate", Toast.LENGTH_SHORT).show()
+            val currDate = dateConverter.convertDayAndMonth(currDay, currMonth)
+            //Toast.makeText(requireContext(), "final - $finalDate", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(requireContext(), "curr - $currDate", Toast.LENGTH_SHORT).show()
             val currMonthConverted = currDate.toString().substring(currDate.toString().lastIndex - 1).toInt()
             val finalMonthConverted = finalDate.toString().substring(finalDate.toString().lastIndex - 1).toInt()
             if (currMonthConverted <= finalMonthConverted) {
@@ -111,13 +116,11 @@ class ListOfHabitsFragment private constructor(): Fragment(), RecyclerViewClickL
             } else {
 
                 if (App.isConnected.value == true) {
-                    // TODO implement send to server, that habit done
                     sharedViewModel.setHabitIsCompletedOnServer(HabitDone(currDate, habit.uid))
                 }
                 Toast.makeText(requireContext(), "Habit done", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 
     override fun onCreateView(
@@ -126,7 +129,7 @@ class ListOfHabitsFragment private constructor(): Fragment(), RecyclerViewClickL
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_list_of_habits, container, false)
-
+        (requireActivity().application as App).applicationComponent.viewModelComponent().inject(this)
         return view
     }
     @ExperimentalCoroutinesApi
@@ -136,9 +139,11 @@ class ListOfHabitsFragment private constructor(): Fragment(), RecyclerViewClickL
 
         setRecyclerView()
 
+
         sharedViewModel.habits.observe(viewLifecycleOwner, { habits ->
             when (page) {
                 GOOD_HABITS -> {
+
                     adapter.updateData(habits.filter { it.type == typeGood } as MutableList<HabitForLocal>)
                 }
                 BAD_HABITS -> {

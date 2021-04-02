@@ -5,7 +5,7 @@ import com.swaptech.domain.models.Habit
 import retrofit2.Response
 import javax.inject.Inject
 
-class GetHabitsUseCase @Inject constructor(private val repo: Repository) {
+open class GetHabitsUseCase @Inject constructor(private val repo: Repository) {
     suspend fun getHabits(): Response<List<Habit>> {
         return repo.getHabits()
     }

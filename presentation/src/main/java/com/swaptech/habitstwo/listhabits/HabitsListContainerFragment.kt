@@ -32,6 +32,7 @@ class HabitsListContainerFragment: Fragment(), FragmentWithViewModel<HabitsListV
 
     }
 
+    @ExperimentalCoroutinesApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,7 +41,6 @@ class HabitsListContainerFragment: Fragment(), FragmentWithViewModel<HabitsListV
 
         (requireActivity().application as App).applicationComponent
                 .viewModelComponent().inject(this)
-
 
         return inflater.inflate(R.layout.fragment_habits, container, false)
     }
@@ -59,6 +59,7 @@ class HabitsListContainerFragment: Fragment(), FragmentWithViewModel<HabitsListV
             if(it == true) {
                 if(viewModel.habitsFromDatabaseForSync.value?.isNotEmpty() == true) {
                     viewModel.syncHabits()
+
                 } else {
                     viewModel.getHabits()
                 }

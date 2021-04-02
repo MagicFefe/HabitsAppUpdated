@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import javax.inject.Inject
 
-class RepositoryImpl @Inject constructor(private val api: Api,
-                                         private val dao: HabitsFromServerDao): Repository {
+open class RepositoryImpl @Inject constructor(protected val api: Api,
+                                              private val dao: HabitsFromServerDao): Repository {
     //Networking
     override suspend fun getHabits(): Response<List<Habit>> {
         return api.getHabitsFromServer()

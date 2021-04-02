@@ -74,6 +74,7 @@
         android:layout_marginEnd="20dp"
         android:text="@string/completed_habit"
         android:src="@drawable/ic_baseline_done_24"
-        android:elevation="50dp"
+        android:background="@drawable/round_button"
+        android:elevation="20dp"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

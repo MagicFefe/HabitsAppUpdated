@@ -44,7 +44,7 @@
     <string name="good_type_of_habit_view_pager">Хорошие</string>
     <string name="bad_type_of_habit_view_pager">Плохие</string>
     <string name="delete_button_edit_activity">Удалить</string>
-    <string name="version_of_app">Версия: Бета 2.0.0</string>
+    <string name="version_of_app">Версия: Бета 3.0.0</string>
     <string name="welcome_splash">Добро пожаловать!</string>
     <string name="add_habit_title">Добавить привычку</string>
     <string name="completed_habit">Выполнить привычку</string>

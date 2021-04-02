@@ -7,8 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.swaptech.habitstwo.R
 
-
-class AboutFragment : Fragment() {
+open class AboutFragment : Fragment() {
 
     companion object {
         fun newInstance() = AboutFragment()
