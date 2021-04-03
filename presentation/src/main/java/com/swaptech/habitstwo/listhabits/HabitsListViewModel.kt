@@ -32,15 +32,13 @@ class HabitsListViewModel(
     var habits = habitsFlow.asLiveData() as LiveData<MutableList<HabitForLocal>>
         private set
 
-
-
     var habitsFromDatabaseForSync = habits
 
     var position = 0
 
 
     fun getHabits() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             val habitsFromServerList = mutableListOf<HabitForLocal>()
             val habitsFromServer = getHabitsUseCase.getHabits()
 
@@ -77,23 +75,22 @@ class HabitsListViewModel(
         }
     }
 
-
     fun syncHabits() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             val converter = HabitsAndHabitsForLocalConverter()
-
             habitsFromDatabaseForSync.value?.forEach { habit ->
-                if (habit.uid == "") {
+                if (habit.uid == "" ) {
                     addHabitUseCase.addHabit(converter.serializeToHabit(habit))
                 }
             }
+            habits.value?.clear()
             getHabits()
             habitsFromDatabaseForSync.value?.clear()
         }
     }
 
     fun setHabitIsCompletedOnServer(habitDone: HabitDone) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             setHabitIsCompletedOnServerUseCase.setHabitIsCompletedOnServer(habitDone)
         }
     }

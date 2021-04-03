@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
+import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -56,6 +57,7 @@ open class MainActivity : AppCompatActivity()/*, NavigationView.OnNavigationItem
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(tool_bar)
+
         //  view_pager?.adapter = ViewPagerAdapter(supportFragmentManager)
         //toggle = ActionBarDrawerToggle(this, main_layout, tool_bar, R.string.about_item_nav_drawer, R.string.home_item_nav_drawer)
         //main_layout.addDrawerListener(toggle)
@@ -108,5 +110,11 @@ open class MainActivity : AppCompatActivity()/*, NavigationView.OnNavigationItem
             super.onBackPressed()
         }
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.app_bar_navigation, menu)
+
+        return super.onCreateOptionsMenu(menu)
     }
 }

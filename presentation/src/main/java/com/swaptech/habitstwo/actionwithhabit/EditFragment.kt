@@ -33,9 +33,7 @@ import kotlinx.android.synthetic.main.fragment_edit.type_good_habit
 import java.util.*
 import javax.inject.Inject
 
-class EditFragment: Fragment(){
-
-    private var colorOfHabit = R.color.dark_grey
+class EditFragment: Fragment() {
 
     private val calendar = Calendar.getInstance()
 
@@ -79,7 +77,7 @@ class EditFragment: Fragment(){
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+        super.onViewCreated(view, savedInstanceState)
         val name: String = item.title
         val description: String = item.description
         val typeOfHabit: String = item.type
@@ -214,6 +212,19 @@ class EditFragment: Fragment(){
         delete_button.setOnClickListener {
             if(App.isConnected.value == true) {
                 viewModel.deleteFromServer(HabitUID(item.uid))
+                val preferences = (requireActivity() as MainActivity).preferences.all
+                val countKey = "${nonEditableItem.title} $APP_PREFERENCES_COUNT"
+                val finalDateKey = "${nonEditableItem.title} $APP_PREFERENCES_FINAL_DATE"
+                val countOfExecsKey = "${nonEditableItem.title} $APP_PREFERENCES_COUNT_OF_EXECS"
+                if(preferences.containsKey(countKey)
+                        && preferences.containsKey(finalDateKey)
+                        && preferences.containsKey(countOfExecsKey)) {
+                    val editor = (requireActivity() as MainActivity).preferences.edit()
+                    editor.remove(countKey)
+                    editor.remove(finalDateKey)
+                    editor.remove(countOfExecsKey)
+                    editor.apply()
+                }
             } else {
                 Toast.makeText(requireContext(), getString(R.string.no_internet_toast), Toast.LENGTH_SHORT).show()
             }

@@ -54,4 +54,5 @@
     <string name="no_internet_toast">НЕТ ИНТЕРНЕТА</string>
     <string name="image_tip_toast">Tip: to load image, turn off internet and turn on again</string>
     <string name="select_priority_tv">Select priority</string>
+    <string name="upload_habits_btn">Upload habits</string>
 </resources>

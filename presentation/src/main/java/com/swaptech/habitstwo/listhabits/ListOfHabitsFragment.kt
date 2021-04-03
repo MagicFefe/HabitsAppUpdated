@@ -114,7 +114,6 @@ class ListOfHabitsFragment: Fragment(), RecyclerViewClickListener, ButtonOfRecVi
                     }
                 }
             } else {
-
                 if (App.isConnected.value == true) {
                     sharedViewModel.setHabitIsCompletedOnServer(HabitDone(currDate, habit.uid))
                 }
@@ -143,7 +142,6 @@ class ListOfHabitsFragment: Fragment(), RecyclerViewClickListener, ButtonOfRecVi
         sharedViewModel.habits.observe(viewLifecycleOwner, { habits ->
             when (page) {
                 GOOD_HABITS -> {
-
                     adapter.updateData(habits.filter { it.type == typeGood } as MutableList<HabitForLocal>)
                 }
                 BAD_HABITS -> {

@@ -17,15 +17,15 @@ import com.swaptech.habitstwo.implofelements.ViewPagerAdapter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class HabitsListContainerFragment: Fragment(), FragmentWithViewModel<HabitsListViewModel> {
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
     @Inject
     override lateinit var viewModel: HabitsListViewModel
 
     companion object {
-
         fun newInstance(): HabitsListContainerFragment {
             return HabitsListContainerFragment()
         }
@@ -47,24 +47,19 @@ class HabitsListContainerFragment: Fragment(), FragmentWithViewModel<HabitsListV
 
 
     @ExperimentalCoroutinesApi
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
+
         view_pager?.adapter = ViewPagerAdapter(childFragmentManager, this)
         tab_layout?.setupWithViewPager(view_pager)
+        //Checking connection in ViewCreated because NetworkReceiver registering in activity
 
-        //viewModel.syncHabits(requireContext())
-        //Checking connection in ActivityCreated because NetworkReceiver registering in activity
 
-        App.isConnected.observe(viewLifecycleOwner, {
-            if(it == true) {
-                if(viewModel.habitsFromDatabaseForSync.value?.isNotEmpty() == true) {
-                    viewModel.syncHabits()
-
-                } else {
-                    viewModel.getHabits()
-                }
+            if(App.isConnected.value == true) {
+                viewModel.getHabits()
             }
-        })
+
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -98,7 +93,7 @@ class HabitsListContainerFragment: Fragment(), FragmentWithViewModel<HabitsListV
             HabitsListViewModel.searchFilter.value = searchFilter
         }
 
-        type_filter.setOnKeyListener { view, i, keyEvent ->
+        type_filter.setOnKeyListener { _, i, keyEvent ->
 
             if(keyEvent.action == KeyEvent.ACTION_DOWN && (i == KeyEvent.KEYCODE_ENTER)) {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -117,12 +112,20 @@ class HabitsListContainerFragment: Fragment(), FragmentWithViewModel<HabitsListV
         }
     }
 
-    private fun openFragment() {
-        activity?.supportFragmentManager?.inTransaction { transaction ->
-            transaction.replace(R.id.nav_host_fragment, HabitsListContainerFragment.newInstance())
+    override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId) {
+        R.id.sync_habits_button -> {
+            if(App.isConnected.value == true) {
+                viewModel.syncHabits()
+            } else {
+                Toast.makeText(requireContext(),
+                        "NO INTERNET CONNECTION FOR SYNCING HABITS",
+                        Toast.LENGTH_SHORT).show()
+            }
+            true
         }
-    }
 
+        else -> super.onOptionsItemSelected(item)
+    }
 }
 
 

@@ -20,6 +20,7 @@
             android:layout_height="?attr/actionBarSize"
             android:gravity="start"
             app:layout_constraintTop_toTopOf="parent"
+            app:menu="@menu/app_bar_navigation"
             />
 
         <fragment
