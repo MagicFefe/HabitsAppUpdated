@@ -118,7 +118,7 @@ class HabitsListContainerFragment: Fragment(), FragmentWithViewModel<HabitsListV
                 viewModel.syncHabits()
             } else {
                 Toast.makeText(requireContext(),
-                        "NO INTERNET CONNECTION FOR SYNCING HABITS",
+                        getString(R.string.no_internet_for_syncing_habits_toast),
                         Toast.LENGTH_SHORT).show()
             }
             true
