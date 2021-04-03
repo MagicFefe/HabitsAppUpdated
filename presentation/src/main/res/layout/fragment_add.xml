@@ -45,7 +45,18 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/name_entry" />
-
+            <TextView
+                android:id="@+id/select_priority_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/select_priority_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/description_entry"
+                app:layout_constraintHorizontal_bias="0"
+                android:layout_margin="5dp"
+                android:textStyle="bold"
+                />
             <Spinner
                 android:id="@+id/priority_entry_fragment"
                 android:layout_width="match_parent"
@@ -54,7 +65,7 @@
                 android:entries="@array/choose_periodicity"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/description_entry" />
+                app:layout_constraintTop_toBottomOf="@id/select_priority_tv" />
 
             <RadioGroup
                 android:id="@+id/type_entry"
@@ -131,164 +142,192 @@
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/color_picker_height"
+                android:layout_margin="5dp"
+                android:orientation="vertical"
+                android:scrollbars="none"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/num_of_execs_of_habit_entry"
-                android:orientation="vertical"
-                android:layout_margin="5dp"
-                android:scrollbars="none">
+                android:id="@+id/scrollView">
 
                 <GridLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:id="@+id/color_picker"
+                    android:background="@drawable/hsl_gradient">
+
                     <Button
                         android:id="@+id/color_1_button"
                         android:layout_width="@dimen/colorPickerSide"
                         android:layout_height="@dimen/colorPickerSide"
-                        android:background="@drawable/color_picker_item"
-                        android:backgroundTint="@color/green_color_picker"
                         android:layout_margin="@dimen/color_picker_item_margin"
-                        android:tag="@color/green_color_picker"
-                        />
+                        android:background="@drawable/color_picker_item"
+                        android:backgroundTint="@color/new_pink_color_picker"
+                        android:tag="@color/new_pink_color_picker" />
+
                     <Button
                         android:id="@+id/color_2_button"
                         android:layout_width="@dimen/colorPickerSide"
                         android:layout_height="@dimen/colorPickerSide"
-                        android:background="@drawable/color_picker_item"
-                        android:backgroundTint="@color/red_color_picker"
                         android:layout_margin="@dimen/color_picker_item_margin"
-                        android:tag="@color/red_color_picker"/>
+                        android:background="@drawable/color_picker_item"
+                        android:backgroundTint="@color/new_dark_purple_color_picker"
+                        android:tag="@color/new_dark_purple_color_picker" />
+
+
                     <Button
+
                         android:id="@+id/color_3_button"
                         android:layout_width="@dimen/colorPickerSide"
                         android:layout_height="@dimen/colorPickerSide"
-                        android:background="@drawable/color_picker_item"
-                        android:backgroundTint="@color/cyan_color_picker"
                         android:layout_margin="@dimen/color_picker_item_margin"
-                        android:tag="@color/cyan_color_picker"/>
+                        android:background="@drawable/color_picker_item"
+                        android:backgroundTint="@color/new_blue_color_picker"
+                        android:tag="@color/new_blue_color_picker"
+                        />
                     <Button
                         android:id="@+id/color_4_button"
                         android:layout_width="@dimen/colorPickerSide"
                         android:layout_height="@dimen/colorPickerSide"
-                        android:background="@drawable/color_picker_item"
-                        android:backgroundTint="@color/purple_500"
                         android:layout_margin="@dimen/color_picker_item_margin"
-                        android:tag="@color/purple_500" />
+                        android:background="@drawable/color_picker_item"
+                        android:backgroundTint="@color/new_light_blue_color_picker"
+                        android:tag="@color/new_light_blue_color_picker" />
+
                     <Button
                         android:id="@+id/color_5_button"
                         android:layout_width="@dimen/colorPickerSide"
                         android:layout_height="@dimen/colorPickerSide"
-                        android:background="@drawable/color_picker_item"
                         android:layout_margin="@dimen/color_picker_item_margin"
-                        android:backgroundTint="@color/purple"
-                        android:tag="@color/purple"/>
+                        android:background="@drawable/color_picker_item"
+                        android:backgroundTint="@color/new_cyan_color_picker"
+                        android:tag="@color/new_cyan_color_picker" />
+
                     <Button
                         android:id="@+id/color_6_button"
                         android:layout_width="@dimen/colorPickerSide"
                         android:layout_height="@dimen/colorPickerSide"
-                        android:background="@drawable/color_picker_item"
                         android:layout_margin="@dimen/color_picker_item_margin"
-                        android:backgroundTint="@color/light_blue_color_picker"
-                        android:tag="@color/light_blue_color_picker"/>
+                        android:background="@drawable/color_picker_item"
+                        android:backgroundTint="@color/new_light_cyan_color_picker"
+                        android:tag="@color/new_light_cyan_color_picker" />
+
                     <Button
                         android:id="@+id/color_7_button"
                         android:layout_width="@dimen/colorPickerSide"
                         android:layout_height="@dimen/colorPickerSide"
-                        android:background="@drawable/color_picker_item"
                         android:layout_margin="@dimen/color_picker_item_margin"
-                        android:backgroundTint="@color/light_cyan_color_picker"
-                        android:tag="@color/light_cyan_color_picker"/>
+                        android:background="@drawable/color_picker_item"
+                        android:backgroundTint="@color/new_light_salad_color_picker"
+                        android:tag="@color/new_light_salad_color_picker" />
+
                     <Button
                         android:id="@+id/color_8_button"
                         android:layout_width="@dimen/colorPickerSide"
                         android:layout_height="@dimen/colorPickerSide"
-                        android:background="@drawable/color_picker_item"
-                        android:backgroundTint="@color/light_light_yellow_color_picker"
                         android:layout_margin="@dimen/color_picker_item_margin"
-                        android:tag="@color/light_light_yellow_color_picker"/>
+                        android:background="@drawable/color_picker_item"
+                        android:backgroundTint="@color/new_light_green_color_picker"
+                        android:tag="@color/new_light_green_color_picker" />
+
                     <Button
                         android:id="@+id/color_9_button"
                         android:layout_width="@dimen/colorPickerSide"
                         android:layout_height="@dimen/colorPickerSide"
-                        android:background="@drawable/color_picker_item"
                         android:layout_margin="@dimen/color_picker_item_margin"
-                        android:backgroundTint="@color/light_light_brown_color_picker"
-                        android:tag="@color/light_light_brown_color_picker"/>
+                        android:background="@drawable/color_picker_item"
+                        android:backgroundTint="@color/new_green_color_picker"
+                        android:tag="@color/new_green_color_picker" />
+
                     <Button
                         android:id="@+id/color_10_button"
                         android:layout_width="@dimen/colorPickerSide"
                         android:layout_height="@dimen/colorPickerSide"
-                        android:background="@drawable/color_picker_item"
                         android:layout_margin="@dimen/color_picker_item_margin"
-                        android:backgroundTint="@color/light_light_green_color_picker"
-                        android:tag="@color/light_light_green_color_picker"/>
+                        android:background="@drawable/color_picker_item"
+                        android:backgroundTint="@color/new_lime_color_picker"
+                        android:tag="@color/new_lime_color_picker" />
+
                     <Button
                         android:id="@+id/color_11_button"
                         android:layout_width="@dimen/colorPickerSide"
                         android:layout_height="@dimen/colorPickerSide"
-                        android:background="@drawable/color_picker_item"
                         android:layout_margin="@dimen/color_picker_item_margin"
-                        android:backgroundTint="@color/light_pink_color_picker"
-                        android:tag="@color/light_pink_color_picker"/>
+                        android:background="@drawable/color_picker_item"
+                        android:backgroundTint="@color/new_light_yellow_color_picker"
+                        android:tag="@color/new_light_yellow_color_picker" />
+
                     <Button
                         android:id="@+id/color_12_button"
                         android:layout_width="@dimen/colorPickerSide"
                         android:layout_height="@dimen/colorPickerSide"
-                        android:background="@drawable/color_picker_item"
                         android:layout_margin="@dimen/color_picker_item_margin"
-                        android:backgroundTint="@color/light_orange_color_picker"
-                        android:tag="@color/light_orange_color_picker"/>
+                        android:background="@drawable/color_picker_item"
+                        android:backgroundTint="@color/new_yellow_color_picker"
+                        android:tag="@color/new_yellow_color_picker" />
+
                     <Button
                         android:id="@+id/color_13_button"
                         android:layout_width="@dimen/colorPickerSide"
                         android:layout_height="@dimen/colorPickerSide"
-                        android:background="@drawable/color_picker_item"
                         android:layout_margin="@dimen/color_picker_item_margin"
-                        android:backgroundTint="@color/light_purple_color_picker"
-                        android:tag="@color/light_purple_color_picker"/>
+                        android:background="@drawable/color_picker_item"
+                        android:backgroundTint="@color/new_orange_color_picker"
+                        android:tag="@color/new_orange_color_picker" />
+
                     <Button
                         android:id="@+id/color_14_button"
                         android:layout_width="@dimen/colorPickerSide"
                         android:layout_height="@dimen/colorPickerSide"
-                        android:background="@drawable/color_picker_item"
                         android:layout_margin="@dimen/color_picker_item_margin"
-                        android:backgroundTint="@color/light_yellow_color_picker"
-                        android:tag="@color/light_yellow_color_picker"/>
+                        android:background="@drawable/color_picker_item"
+                        android:backgroundTint="@color/new_red_color_picker"
+                        android:tag="@color/new_red_color_picker" />
+
                     <Button
                         android:id="@+id/color_15_button"
                         android:layout_width="@dimen/colorPickerSide"
                         android:layout_height="@dimen/colorPickerSide"
-                        android:background="@drawable/color_picker_item"
                         android:layout_margin="@dimen/color_picker_item_margin"
-                        android:backgroundTint="@color/teal_200"
-                        android:tag="@color/teal_200"/>
+                        android:background="@drawable/color_picker_item"
+                        android:backgroundTint="@color/new_light_pink_color_picker"
+                        android:tag="@color/new_light_pink_color_picker" />
+
                     <Button
                         android:id="@+id/color_16_button"
                         android:layout_width="@dimen/colorPickerSide"
                         android:layout_height="@dimen/colorPickerSide"
-                        android:background="@drawable/color_picker_item"
                         android:layout_margin="@dimen/color_picker_item_margin"
-                        android:backgroundTint="@color/teal_700"
-                        android:tag="@color/teal_700"/>
+                        android:background="@drawable/color_picker_item"
+                        android:backgroundTint="@color/new_pink_color_picker"
+                        android:tag="@color/new_pink_color_picker" />
                 </GridLayout>
 
             </HorizontalScrollView>
 
+            <View
+                android:id="@+id/colorViewer"
+                android:layout_width="@dimen/colorPickerSide"
+                android:layout_height="@dimen/colorPickerSide"
+                android:layout_margin="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/scrollView"
+                android:background="@color/dark_grey"/>
 
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/save_description"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_forward_24"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="@id/description_entry"
-                app:layout_constraintTop_toBottomOf="@id/description_entry" />
-
-
-
-
+                app:layout_constraintTop_toBottomOf="@id/colorViewer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                android:layout_margin="5dp"
+                android:id="@+id/textColorViewer"
+                android:text="R: 0 G: 0 B: 0"
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>

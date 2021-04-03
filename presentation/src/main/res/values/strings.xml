@@ -51,4 +51,5 @@
     <string name="too_big_numbers_toast">Too big numbers</string>
     <string name="no_internet_toast">NO INTERNET CONNECTION</string>
     <string name="image_tip_toast">Tip: to load image, turn off internet and turn on again</string>
+    <string name="select_priority_tv">Select priority</string>
 </resources>

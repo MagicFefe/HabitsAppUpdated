@@ -4,4 +4,5 @@
     <dimen name="color_picker_item_margin">18dp</dimen>
     <dimen name="bottom_button_height">60dp</dimen>
     <dimen name="button_completing_habit">60dp</dimen>
+    <dimen name="color_picker_height">110dp</dimen>
 </resources>

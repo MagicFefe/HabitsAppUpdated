@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 
-fun Button.getButtonColor(): String? {
+fun Button.getButtonColorFromTag(): String? {
     return this.tag?.toString()
 }
 

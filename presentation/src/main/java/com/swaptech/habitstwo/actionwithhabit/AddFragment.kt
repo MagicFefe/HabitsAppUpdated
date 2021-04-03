@@ -2,11 +2,9 @@ package com.swaptech.habitstwo.actionwithhabit
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.ColorSpace
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.AdapterView
 import android.widget.Button
 import android.widget.Toast
@@ -14,12 +12,12 @@ import androidx.fragment.app.Fragment
 import com.swaptech.data.models.HabitForLocal
 import com.swaptech.habitstwo.*
 import com.swaptech.habitstwo.listhabits.HabitsListContainerFragment
-import com.swaptech.habitstwo.DateConverter
 import com.swaptech.habitstwo.mapper.HabitsAndHabitsForLocalConverter
 import com.swaptech.habitstwo.navigation.MainActivity
 import kotlinx.android.synthetic.main.fragment_add.*
 import java.util.*
 import javax.inject.Inject
+
 
 class AddFragment: Fragment() {
 
@@ -51,23 +49,29 @@ class AddFragment: Fragment() {
         return inflater.inflate(R.layout.fragment_add, container, false)
     }
 
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    @SuppressLint("SetTextI18n")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         @SuppressLint("ResourceAsColor")
         for (item in colorPickerItems) {
-            activity?.findViewById<Button>(item)?.setOnClickListener {
-                val viewId = it.id
-                val button = activity?.findViewById<Button>(viewId)
-                button?.let {
-                    colorOfHabit = Color.parseColor(button.getButtonColor())
 
-                }
-                //val hex = '#' + Integer.toHexString(colorOfHabit).substring(2)
-                //Toast.makeText(requireContext(), "$colorOfHabit - $hex", Toast.LENGTH_SHORT).show()
+            val button = activity?.findViewById<Button>(item)
+
+            button?.setOnClickListener {
+                val color = Color.parseColor(button.getButtonColorFromTag())
+
+                val red = Color.red(color)
+                val green = Color.green(color)
+                val blue = Color.blue(color)
+
+                colorOfHabit = color
+                colorViewer.setBackgroundColor(color)
+
+                textColorViewer.text = "R: $red G: $green B: $blue"
             }
         }
+
 
         name_entry.setOnKeyListener { _, i, keyEvent ->
             if (keyEvent.action == KeyEvent.ACTION_DOWN && (i == KeyEvent.KEYCODE_ENTER)) {
@@ -81,15 +85,8 @@ class AddFragment: Fragment() {
             checkCompleting()
         }
 
-        save_description.setOnClickListener {
-
-            hideKeyboard()
-            save_description.visibility = View.GONE
-        }
-
         description_entry.onTextChangedListener { text ->
             viewModel.description = text.toString()
-            save_description.visibility = View.VISIBLE
             checkCompleting()
         }
 
@@ -117,7 +114,7 @@ class AddFragment: Fragment() {
 
         num_of_execs_of_habit_entry.onTextChangedListener { text ->
             viewModel.countOfExecsOfHabit = try {
-               text?.toString()?.toInt() ?: 0
+                text?.toString()?.toInt() ?: 0
             } catch (e: NumberFormatException) {
                 0
             }
@@ -133,7 +130,7 @@ class AddFragment: Fragment() {
 
         period_of_exec_of_habit.onTextChangedListener { text ->
             viewModel.frequencyOfExecs = try {
-               text?.toString()?.toInt() ?: 0
+                text?.toString()?.toInt() ?: 0
             } catch (e: NumberFormatException) {
                 0
             }
@@ -183,6 +180,8 @@ class AddFragment: Fragment() {
             }
         }
     }
+
+
 
     private fun checkCompleting(): Boolean {
         if (viewModel.name.isNotEmpty()

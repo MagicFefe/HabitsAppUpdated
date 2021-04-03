@@ -53,7 +53,6 @@ class Adapter(
             //change color of drawable resource
             val unwrappedDrawable = AppCompatResources.getDrawable(context, R.drawable.round_button)
             val wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable!!)
-
             DrawableCompat.setTint(wrappedDrawable, color)
 
             itemView.setBackgroundResource(R.drawable.round_button)

@@ -33,4 +33,20 @@
     <color name="light_pink_color_picker">#F06292</color>
 
 
+
+    <color name="new_pink_color_picker">#F400FF</color>
+    <color name="new_light_pink_color_picker">#FF0090</color>
+    <color name="new_dark_purple_color_picker">#6400FF</color>
+    <color name="new_blue_color_picker">#000BFF</color>
+    <color name="new_light_blue_color_picker">#007AFF</color>
+    <color name="new_cyan_color_picker">#00BCFF</color>
+    <color name="new_light_cyan_color_picker">#00FFFF</color>
+    <color name="new_light_salad_color_picker">#00FFBC</color>
+    <color name="new_light_green_color_picker">#00FF59</color>
+    <color name="new_green_color_picker">#00FF00</color>
+    <color name="new_lime_color_picker">#6FFF00</color>
+    <color name="new_light_yellow_color_picker">#D3FF00</color>
+    <color name="new_yellow_color_picker">#FFD300</color>
+    <color name="new_orange_color_picker">#FF8500</color>
+    <color name="new_red_color_picker">#FF0000</color>
 </resources>

@@ -18,7 +18,18 @@ import com.swaptech.habitstwo.listhabits.HabitsListContainerFragment
 import com.swaptech.habitstwo.DateConverter
 import com.swaptech.habitstwo.mapper.HabitsAndHabitsForLocalConverter
 import com.swaptech.habitstwo.navigation.MainActivity
+import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_edit.*
+import kotlinx.android.synthetic.main.fragment_edit.button_complete_creating_habit
+import kotlinx.android.synthetic.main.fragment_edit.colorViewer
+import kotlinx.android.synthetic.main.fragment_edit.description_entry
+import kotlinx.android.synthetic.main.fragment_edit.name_entry
+import kotlinx.android.synthetic.main.fragment_edit.num_of_execs_of_habit_entry
+import kotlinx.android.synthetic.main.fragment_edit.period_of_exec_of_habit
+import kotlinx.android.synthetic.main.fragment_edit.textColorViewer
+import kotlinx.android.synthetic.main.fragment_edit.type_bad_habit
+import kotlinx.android.synthetic.main.fragment_edit.type_entry
+import kotlinx.android.synthetic.main.fragment_edit.type_good_habit
 import java.util.*
 import javax.inject.Inject
 
@@ -66,6 +77,7 @@ class EditFragment: Fragment(){
         return inflater.inflate(R.layout.fragment_edit, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val name: String = item.title
@@ -76,8 +88,7 @@ class EditFragment: Fragment(){
         val countOfExecsOfHabit: Int = item.count
         val frequencyOfExecs: Int = item.frequency
 
-        color = item.color
-        colorOfHabit = color
+
         viewModel.name = name
         viewModel.description = description
         viewModel.typeOfHabit = typeOfHabit
@@ -88,17 +99,29 @@ class EditFragment: Fragment(){
 
         @SuppressLint("ResourceAsColor")
         for (item in colorPickerItems) {
-            activity?.findViewById<Button>(item)?.setOnClickListener {
-                val viewId = it.id
-                val button = activity?.findViewById<Button>(viewId)
-                button?.let {
-                    colorOfHabit = Color.parseColor(button.getButtonColor())
-                }
+            val button = activity?.findViewById<Button>(item)
+            button?.setOnClickListener {
+
+                val color = Color.parseColor(button.getButtonColorFromTag())
+
+                val red = Color.red(color)
+                val green = Color.green(color)
+                val blue = Color.blue(color)
+
+                this.item.color = color
+                colorViewer.setBackgroundColor(color)
+
+                textColorViewer.text = "R: $red G: $green B: $blue"
+
                 //val hex = '#' + Integer.toHexString(colorOfHabit).substring(2)
                 //Toast.makeText(requireContext(), "$colorOfHabit - $hex", Toast.LENGTH_SHORT).show()
             }
         }
-
+        colorViewer.setBackgroundColor(item.color)
+        val red = Color.red(item.color)
+        val green = Color.green(item.color)
+        val blue = Color.blue(item.color)
+        textColorViewer.text = "R: $red G: $green B: $blue"
         name_entry.setText(item.title)
         description_entry.setText(item.description)
         period_of_exec_of_habit.setText(item.frequency.toString())
@@ -131,14 +154,8 @@ class EditFragment: Fragment(){
             checkCompleting()
         }
 
-        save_description.setOnClickListener {
-            save_description.visibility = View.GONE
-            this.hideKeyboard()
-        }
-
         description_entry.onTextChangedListener { text ->
             item.description = text.toString()
-            save_description.visibility = View.VISIBLE
         }
 
         priority_entry_activity.onItemSelectedListener = SpinnerClickListenerImpl()
@@ -200,7 +217,9 @@ class EditFragment: Fragment(){
             } else {
                 Toast.makeText(requireContext(), getString(R.string.no_internet_toast), Toast.LENGTH_SHORT).show()
             }
-            openHabitsFragment()
+            activity?.supportFragmentManager?.inTransaction {
+                it.replace(R.id.nav_host_fragment, HabitsListContainerFragment.newInstance())
+            }
         }
 
     }
@@ -216,7 +235,7 @@ class EditFragment: Fragment(){
             button_complete_creating_habit.visibility = View.VISIBLE
 
             button_complete_creating_habit.setOnClickListener {
-                if(viewModel.checkUniquenessOfTitle(item.title) || viewModel.nonUniqueHabit == item) {
+                if(viewModel.checkUniquenessOfTitle(item.title) || viewModel.nonUniqueHabit.uid == item.uid) {
                     val dateConverter = DateConverter()
                     val day = calendar.get(Calendar.DATE)
                     val month = calendar.get(Calendar.MONTH)
@@ -252,7 +271,9 @@ class EditFragment: Fragment(){
                     } else {
                         Toast.makeText(requireContext(), getString(R.string.no_internet_toast), Toast.LENGTH_SHORT).show()
                     }
-                    openHabitsFragment()
+                    activity?.supportFragmentManager?.inTransaction {
+                        it.replace(R.id.nav_host_fragment, HabitsListContainerFragment.newInstance())
+                    }
                     clear()
                 } else {
                     Toast.makeText(requireContext(), "Please, change title", Toast.LENGTH_SHORT).show()
@@ -279,11 +300,6 @@ class EditFragment: Fragment(){
 
         override fun onNothingSelected(p0: AdapterView<*>?) {
 
-        }
-    }
-    private fun openHabitsFragment() {
-        activity?.supportFragmentManager?.inTransaction {
-            it.replace(R.id.nav_host_fragment, HabitsListContainerFragment.newInstance())
         }
     }
 }
