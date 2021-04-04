@@ -48,6 +48,10 @@ class HabitsListContainerFragment: Fragment(), FragmentWithViewModel<HabitsListV
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
+        if(App.isConnected.value == true) {
+            viewModel.getHabits()
+        }
+
         view_pager?.adapter = ViewPagerAdapter(childFragmentManager, this)
         tab_layout?.setupWithViewPager(view_pager)
 
@@ -103,20 +107,6 @@ class HabitsListContainerFragment: Fragment(), FragmentWithViewModel<HabitsListV
                         .addToBackStack(null)
             }
         }
-
-        if(savedInstanceState == null) {
-            val observer = { connectionState: Boolean ->
-                if(connectionState) {
-                    viewModel.getHabits()
-                }
-            }
-            
-            App.isConnected.observe(viewLifecycleOwner, observer)
-            App.isConnected.removeObserver(observer)
-        }
-
-
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId) {

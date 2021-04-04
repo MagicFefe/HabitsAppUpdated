@@ -42,7 +42,7 @@
     <string name="good_type_of_habit_view_pager">Good</string>
     <string name="bad_type_of_habit_view_pager">Bad</string>
     <string name="delete_button_edit_activity">Delete</string>
-    <string name="version_of_app">Version: Release 1.0.1</string>
+    <string name="version_of_app">Version: Release 1.0.2</string>
     <string name="welcome_splash">Welcome!</string>
     <string name="add_habit_title">Add habit</string>
     <string name="completed_habit">Complete habit</string>
