@@ -5,12 +5,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.swaptech.data.models.HabitForLocal
@@ -77,7 +74,7 @@ class Adapter(
             clickListener.onRecyclerViewListClickListener(item, pos)
         }
         holder.buttonOfRecView.setOnClickListener {
-            buttonClickListener.onCheckBoxOfRecViewClickListener(item, pos)
+            buttonClickListener.onButtonOfRecViewClickListener(item, pos)
         }
     }
 

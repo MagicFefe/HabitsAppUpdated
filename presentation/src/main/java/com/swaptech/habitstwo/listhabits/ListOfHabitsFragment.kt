@@ -73,7 +73,7 @@ class ListOfHabitsFragment: Fragment(), RecyclerViewClickListener, ButtonOfRecVi
     }
 
     @ExperimentalCoroutinesApi
-    override fun onCheckBoxOfRecViewClickListener(habit: HabitForLocal, position: Int) {
+    override fun onButtonOfRecViewClickListener(habit: HabitForLocal, position: Int) {
         var preferences: MutableMap<String, *> = (requireActivity() as MainActivity).preferences.all
         val countOfExecsKey = "${habit.title} $APP_PREFERENCES_COUNT_OF_EXECS"
         val countKey = "${habit.title} $APP_PREFERENCES_COUNT"

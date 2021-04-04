@@ -1,8 +1,6 @@
 package com.swaptech.habitstwo.listhabits
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.swaptech.habitstwo.actionwithhabit.AddFragment
@@ -10,11 +8,10 @@ import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_habits.*
 import android.view.*
 import android.widget.Toast
-import androidx.lifecycle.LiveData
-import com.google.android.material.snackbar.Snackbar
 import com.swaptech.habitstwo.*
 import com.swaptech.habitstwo.implofelements.ViewPagerAdapter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.util.*
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -53,12 +50,8 @@ class HabitsListContainerFragment: Fragment(), FragmentWithViewModel<HabitsListV
 
         view_pager?.adapter = ViewPagerAdapter(childFragmentManager, this)
         tab_layout?.setupWithViewPager(view_pager)
+
         //Checking connection in ViewCreated because NetworkReceiver registering in activity
-
-
-            if(App.isConnected.value == true) {
-                viewModel.getHabits()
-            }
 
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
 
@@ -110,6 +103,20 @@ class HabitsListContainerFragment: Fragment(), FragmentWithViewModel<HabitsListV
                         .addToBackStack(null)
             }
         }
+
+        if(savedInstanceState == null) {
+            val observer = { connectionState: Boolean ->
+                if(connectionState) {
+                    viewModel.getHabits()
+                }
+            }
+            
+            App.isConnected.observe(viewLifecycleOwner, observer)
+            App.isConnected.removeObserver(observer)
+        }
+
+
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId) {
