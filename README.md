@@ -1,2 +1,3 @@
 # HabitsAppUpdated
-Increment date in HabitForLocal because date must be different
+Updated version of HabitsApp repository
+
